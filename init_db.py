@@ -6,6 +6,16 @@ from app import app, db, CollegeStudent, Admin, Principal, SystemSetting, bcrypt
 
 def init_database():
     with app.app_context():
+        from sqlalchemy import text
+        try:
+            db_info = db.session.execute(text("SELECT DATABASE(), CURRENT_USER()")).fetchone()
+            print(f"0. Database Check -> Active Database: '{db_info[0]}', User: '{db_info[1]}'")
+            if db_info[0] in ('mysql', 'information_schema', 'performance_schema', 'sys', None):
+                print(f"   [!] WARNING: Connected to system database '{db_info[0]}'. Application tables cannot be created here.")
+                print(f"   [!] Please make sure your DATABASE_URL ends with a user database like '/test?ssl_verify_cert=true' or '/college_db?ssl_verify_cert=true'.")
+        except Exception as conn_err:
+            print(f"0. Database connection pre-check: {conn_err}")
+
         print("1. Creating database tables...")
         db.create_all()
         print("   -> Tables verified.")
