@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Governance Settings | Principal Executive Console</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        .portal-sidebar.principal-sidebar {
+            background: linear-gradient(180deg, #071526 0%, #030a14 100%);
+            border-right: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-header {
+            border-bottom: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-crest {
+            background: rgba(197, 155, 39, 0.15);
+            color: var(--gold-400);
+            border: 2px solid var(--gold-500);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-menu a.active {
+            background: rgba(197, 155, 39, 0.12);
+            color: #ffffff;
+            border-left-color: var(--gold-500);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Principal Executive Sidebar -->
+        <aside class="portal-sidebar principal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5 style="color: var(--gold-400);">PRINCIPAL CELL</h5>
+                    <span>Executive Oversight</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Executive Command</div>
+                <a href="{{ url_for('principal_dashboard') }}">
+                    <i class="fa-solid fa-chart-line"></i> <span>Executive Analytics</span>
+                </a>
+                <a href="{{ url_for('principal_escalations') }}">
+                    <i class="fa-solid fa-fire text-danger"></i> <span>Critical Escalations</span>
+                </a>
+                <a href="{{ url_for('principal_master_records') }}">
+                    <i class="fa-solid fa-database"></i> <span>Master Global Records</span>
+                </a>
+                <a href="{{ url_for('principal_notices') }}">
+                    <i class="fa-solid fa-bullhorn text-gold-400"></i> <span>Notices & Bulletins</span>
+                </a>
+                
+                <div class="menu-category">Institutional Governance</div>
+                <a href="{{ url_for('principal_manage_users') }}">
+                    <i class="fa-solid fa-users-gear"></i> <span>User & Admin Accounts</span>
+                </a>
+                <a href="{{ url_for('principal_settings') }}" class="active">
+                    <i class="fa-solid fa-sliders"></i> <span>System Governance</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">Office of Principal</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">Supreme Authority</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Institutional Governance & SLA Policy Controls</h5>
+                        <span class="small text-muted">Configure System Automation Thresholds & Campus Safety Triggers</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ url_for('principal_dashboard') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Executive Dashboard
+                    </a>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-info me-2"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <div class="row justify-content-center">
+                    <div class="col-xl-8 col-lg-10">
+
+                        {% if settings.maintenance_mode %}
+                        <div class="alert alert-danger shadow-sm border-danger border-2 rounded-3 p-3 mb-4 d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="fa-solid fa-triangle-exclamation fs-3 text-danger"></i>
+                                <div>
+                                    <strong class="d-block text-danger fs-6">INSTITUTIONAL MAINTENANCE LOCKDOWN IS CURRENTLY ACTIVE</strong>
+                                    <span class="small text-dark">All student and public portals are currently blocked with an official 503 Maintenance screen.</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-danger font-mono px-3 py-2">Lockdown Active</span>
+                        </div>
+                        {% endif %}
+
+                        <form action="{{ url_for('principal_settings') }}" method="POST">
+                            
+                            <!-- SLA Escalation Triggers -->
+                            <div class="card card-official mb-4">
+                                <div class="card-header d-flex align-items-center justify-content-between py-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-fire text-danger fs-5"></i>
+                                        <h6 class="m-0 fw-bold font-heading text-white">Automated SLA Escalation Timeframes</h6>
+                                    </div>
+                                    <span class="badge bg-danger font-mono">Real-Time Daemon</span>
+                                </div>
+
+                                <div class="card-body p-4 p-md-5">
+                                    <p class="small text-muted mb-4">
+                                        Define the maximum grace duration permitted for administrative staff to review and resolve grievances. Any ticket exceeding these days will automatically be flagged and escalated to the Principal's priority desk.
+                                    </p>
+
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label-official required">Critical / High Severity SLA Limit</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control form-control-official" name="high_escalation" 
+                                                       value="{{ settings.high_escalation_days }}" min="1" max="30" required>
+                                                <span class="input-group-text bg-light font-mono">Days</span>
+                                            </div>
+                                            <div class="form-text small text-muted">Tickets categorized as High Priority breach SLA after this timeframe.</div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label-official required">Standard (Medium &amp; Low) SLA Limit</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control form-control-official" name="standard_escalation" 
+                                                       value="{{ settings.standard_escalation_days }}" min="1" max="60" required>
+                                                <span class="input-group-text bg-light font-mono">Days</span>
+                                            </div>
+                                            <div class="form-text small text-muted">Standard daily maintenance issues breach SLA after this timeframe.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Security & Maintenance Override -->
+                            <div class="card card-official mb-4" style="border-top-color: #dc3545;">
+                                <div class="card-header bg-danger text-white py-3">
+                                    <h6 class="m-0 fw-bold font-heading text-white">
+                                        <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> System Maintenance & Lockdown
+                                    </h6>
+                                </div>
+
+                                <div class="card-body p-4">
+                                    <div class="form-check form-switch p-0 d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <label class="form-check-label fw-bold text-navy-950 d-inline-flex align-items-center fs-6" for="maintenanceMode">
+                                                Institutional Maintenance Lockdown Flag
+                                                {% if settings.maintenance_mode %}
+                                                    <span class="badge bg-danger ms-2 font-mono">LOCKDOWN ON</span>
+                                                {% else %}
+                                                    <span class="badge bg-success ms-2 font-mono">NORMAL OPERATION</span>
+                                                {% endif %}
+                                            </label>
+                                            <span class="small text-muted d-block">
+                                                Signals server maintenance status across all student and administrative portals.
+                                            </span>
+                                        </div>
+                                        <input class="form-check-input ms-3" type="checkbox" id="maintenanceMode" name="maintenance_mode" 
+                                               value="true" style="width: 3em; height: 1.6em; cursor: pointer;" {% if settings.maintenance_mode %}checked{% endif %}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Save Controls -->
+                            <div class="d-flex justify-content-end gap-3 pt-2">
+                                <a href="{{ url_for('principal_dashboard') }}" class="btn btn-outline-secondary px-4 py-2">
+                                    Cancel Changes
+                                </a>
+                                <button type="submit" class="btn btn-navy px-5 py-2">
+                                    <i class="fa-solid fa-floppy-disk text-gold-400 me-2"></i> Save Policy Configurations
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

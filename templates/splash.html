@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Grievance &amp; Facility Management System | Portal Entrance</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #0f2b48 0%, #081726 55%, #02070e 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient background subtle particle glow */
+        .ambient-glow {
+            position: absolute;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(197, 155, 39, 0.12) 0%, rgba(15, 43, 72, 0.05) 50%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <!-- Discreet Skip Button -->
+    <button class="splash-skip-btn" onclick="navigateToHome()" title="Skip intro and proceed directly to portal">
+        Skip Intro <i class="fa-solid fa-arrow-right ms-1"></i>
+    </button>
+
+    <div class="splash-container">
+        <!-- Animated Official Crest Emblem with YouTube-Style Kinetic Intro -->
+        <div class="splash-logo-wrap">
+            <!-- YouTube Sonic Shockwave Energy Blast Rings -->
+            <div class="splash-shockwave shockwave-1"></div>
+            <div class="splash-shockwave shockwave-2"></div>
+            <div class="splash-shockwave shockwave-3"></div>
+
+            <!-- YouTube Radiant Neon Aura Backlight -->
+            <div class="splash-backlight-aura"></div>
+
+            <!-- YouTube Twinkling Motion Sparkle Starbursts -->
+            <div class="splash-sparkle sparkle-top-right">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/></svg>
+            </div>
+            <div class="splash-sparkle sparkle-top-left">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/></svg>
+            </div>
+            <div class="splash-sparkle sparkle-bottom-left">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/></svg>
+            </div>
+            <div class="splash-sparkle sparkle-bottom-right">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/></svg>
+            </div>
+
+            <!-- Concentric Orbital Rings -->
+            <div class="splash-orbit-outer"></div>
+            <div class="splash-orbit-inner"></div>
+            
+            <!-- Central Emblem Disc with YouTube Spring Pop & 3D Levitation -->
+            <div class="splash-crest-disc" onclick="navigateToHome()" title="Campus Redressal Portal">
+                <!-- YouTube High-Velocity Lens Flare Beam -->
+                <div class="splash-lens-flare"></div>
+
+                <!-- High-Definition Official Academic Crest SVG -->
+                <svg class="splash-crest-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Concentric Gold Rings -->
+                    <circle cx="70" cy="70" r="64" stroke="url(#goldGradSplash)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+                    <circle cx="70" cy="70" r="54" stroke="url(#goldGradSplash)" stroke-width="1" opacity="0.8"/>
+                    <circle cx="70" cy="70" r="48" fill="#0b1f35" stroke="url(#goldGradSplash)" stroke-width="2"/>
+                    
+                    <!-- Crest Star of Excellence -->
+                    <path d="M70 27 L72 31.5 L76.5 32 L73 35 L74 39.5 L70 37 L66 39.5 L67 35 L63.5 32 L68 31.5 Z" fill="#dfb743"/>
+                    
+                    <!-- Official Academic Mortarboard Cap -->
+                    <polygon points="70,43 102,56 70,69 38,56" fill="url(#goldGradSplash)" stroke="#edd284" stroke-width="1.2"/>
+                    <path d="M51 61.5 L51 75 C51 83.5 89 83.5 89 75 L89 61.5" fill="#071320" stroke="url(#goldGradSplash)" stroke-width="2"/>
+                    
+                    <!-- Academic Tassel -->
+                    <path d="M94 58 L98 73 C99 77 97 81 95 83" stroke="#edd284" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="95" cy="84" r="2.2" fill="#dfb743"/>
+                    
+                    <!-- Institutional Laurels of Quality & Equity -->
+                    <path d="M41 87 C43 98 55 106 70 106 C85 106 97 98 99 87" stroke="url(#goldGradSplash)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                    <!-- Laurel Berries & Nodes -->
+                    <circle cx="43" cy="90" r="2.5" fill="#dfb743"/>
+                    <circle cx="51" cy="98" r="2.5" fill="#dfb743"/>
+                    <circle cx="61" cy="104" r="2.5" fill="#dfb743"/>
+                    <circle cx="79" cy="104" r="2.5" fill="#dfb743"/>
+                    <circle cx="89" cy="98" r="2.5" fill="#dfb743"/>
+                    <circle cx="97" cy="90" r="2.5" fill="#dfb743"/>
+
+                    <defs>
+                        <linearGradient id="goldGradSplash" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#edd284"/>
+                            <stop offset="50%" stop-color="#c59b27"/>
+                            <stop offset="100%" stop-color="#9e791b"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <!-- Shimmer Ray -->
+                <div class="splash-shimmer-sweep"></div>
+            </div>
+        </div>
+
+        <!-- Official Typography -->
+        <div class="splash-text-wrap">
+            <div class="splash-badge">
+                <i class="fa-solid fa-shield-halved me-1"></i> Official Institutional Portal
+            </div>
+            <h1 class="splash-title font-heading">
+                COLLEGE GRIEVANCE REDRESSAL
+                <span class="splash-sub-title">&amp; FACILITY MANAGEMENT SYSTEM</span>
+            </h1>
+            <p class="splash-caption">Autonomous Academic Quality Assurance &amp; Institutional Governance Cell</p>
+        </div>
+
+        <!-- Loading Progression -->
+        <div class="splash-loader-wrap">
+            <div class="splash-progress-bar">
+                <div class="splash-progress-fill"></div>
+            </div>
+            <div class="splash-status-text" id="splashStatus">
+                <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Initializing Secure Institutional Environment...
+            </div>
+        </div>
+    </div>
+
+    <!-- Entrance Animation Controller & Smooth Portal Handover -->
+    <script>
+        (function() {
+            const statusEl = document.getElementById('splashStatus');
+            let redirected = false;
+
+            if (statusEl) {
+                setTimeout(() => {
+                    if (statusEl && !redirected) {
+                        statusEl.innerHTML = '<i class="fa-solid fa-circle-check text-success me-1"></i> Verifying Academic Governance Protocols...';
+                    }
+                }, 700);
+                setTimeout(() => {
+                    if (statusEl && !redirected) {
+                        statusEl.innerHTML = '<i class="fa-solid fa-shield-halved text-gold-400 me-1"></i> Establishing Encrypted Redressal Channel...';
+                    }
+                }, 1400);
+                setTimeout(() => {
+                    if (statusEl && !redirected) {
+                        statusEl.innerHTML = '<i class="fa-solid fa-door-open text-warning me-1"></i> Welcome to Campus Redressal Portal';
+                    }
+                }, 1950);
+            }
+
+            window.navigateToHome = function() {
+                if (redirected) return;
+                redirected = true;
+                sessionStorage.setItem('from_splash', 'true');
+                document.body.classList.add('fade-out');
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('home') }}";
+                }, 550);
+            };
+
+            // Automatic elegant transition after 2.4 seconds
+            setTimeout(navigateToHome, 2400);
+        })();
+    </script>
+</body>
+</html>

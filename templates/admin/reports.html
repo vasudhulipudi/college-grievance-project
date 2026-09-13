@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Reports | College Grievance & Facility Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Administrative Sidebar -->
+        <aside class="portal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-shield-halved text-gold-400"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5>ADMINISTRATION</h5>
+                    <span>Grievance Operations</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Operational Control</div>
+                <a href="{{ url_for('admin_dashboard') }}">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Command Overview</span>
+                </a>
+                <a href="{{ url_for('admin_manage_complaints') }}">
+                    <i class="fa-solid fa-bars-progress"></i> <span>Manage Grievances</span>
+                </a>
+                <a href="{{ url_for('admin_notices') }}">
+                    <i class="fa-solid fa-bullhorn"></i> <span>Notices & Bulletins</span>
+                </a>
+                <a href="{{ url_for('admin_reports') }}" class="active">
+                    <i class="fa-solid fa-file-invoice"></i> <span>Audit & Reports</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">{{ current_user.username }}</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">Administrative Officer</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Institutional Analytics & Audit Reporting</h5>
+                        <span class="small text-muted">Generate Anonymized Compliance Logs & Facility Management Overviews</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="portal-user-badge">
+                        <i class="fa-solid fa-server text-success"></i>
+                        <span>Live Database Linked</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <div class="row justify-content-center">
+                    <div class="col-xl-9 col-lg-10">
+
+                        <!-- Report Generator Card -->
+                        <div class="card card-official mb-4">
+                            <div class="card-header d-flex align-items-center justify-content-between py-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-file-pdf text-gold-500 fs-5"></i>
+                                    <h6 class="m-0 fw-bold font-heading text-white">Custom Audit Dossier Generator</h6>
+                                </div>
+                                <span class="badge bg-warning text-dark font-mono">NAAC & NBA Audit Format</span>
+                            </div>
+
+                            <div class="card-body p-4 p-md-5">
+                                <p class="text-muted small mb-4">
+                                    Export certified institutional grievance performance summaries for compliance reporting and internal quality audits. All student complainant identities are cryptographically anonymized in generated logs in full adherence to college privacy governance.
+                                </p>
+
+                                <form action="{{ url_for('admin_export_pdf') }}" method="GET" id="reportForm">
+                                    <div class="row g-4 mb-4">
+                                        <!-- Start Date -->
+                                        <div class="col-md-6">
+                                            <label class="form-label-official required">Reporting Window: Start Date</label>
+                                            <input type="date" class="form-control form-control-official" name="start_date" value="{{ start_date.strftime('%Y-%m-%d') if start_date else '2026-01-01' }}" required>
+                                        </div>
+
+                                        <!-- End Date -->
+                                        <div class="col-md-6">
+                                            <label class="form-label-official required">Reporting Window: End Date</label>
+                                            <input type="date" class="form-control form-control-official" name="end_date" value="{{ current_date.strftime('%Y-%m-%d') }}" required>
+                                        </div>
+
+                                        <!-- Category Filter -->
+                                        <div class="col-md-4">
+                                            <label class="form-label-official">Department Category</label>
+                                            <select class="form-select form-control-official" name="category">
+                                                <option value="All">All Categories (Comprehensive)</option>
+                                                <option value="Academic">Academic Affairs</option>
+                                                <option value="Faculty">Faculty & Instruction</option>
+                                                <option value="Library">Library Resources</option>
+                                                <option value="Laboratory">Laboratory Facilities</option>
+                                                <option value="Hostel">Hostel Accommodation</option>
+                                                <option value="Transport">Campus Transportation</option>
+                                                <option value="Sports">Sports & Gymnasium</option>
+                                                <option value="Canteen">Campus Dining</option>
+                                                <option value="Infrastructure">Civil & Electrical Infrastructure</option>
+                                                <option value="Other">Other Affairs</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Priority Filter -->
+                                        <div class="col-md-4">
+                                            <label class="form-label-official">Priority Severity</label>
+                                            <select class="form-select form-control-official" name="priority">
+                                                <option value="All">All Priority Tiers</option>
+                                                <option value="High">High Urgency</option>
+                                                <option value="Medium">Medium Severity</option>
+                                                <option value="Low">Low / General</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Status Filter -->
+                                        <div class="col-md-4">
+                                            <label class="form-label-official">Resolution Status</label>
+                                            <select class="form-select form-control-official" name="status">
+                                                <option value="All">All Workflow States</option>
+                                                <option value="Submitted">Submitted (New)</option>
+                                                <option value="Under Review">Under Review</option>
+                                                <option value="In Progress">In Progress</option>
+                                                <option value="Resolved">Resolved</option>
+                                                <option value="Closed">Archived / Closed</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-wrap gap-3 pt-3 border-top">
+                                        <button type="submit" formaction="{{ url_for('admin_export_pdf') }}" class="btn btn-navy px-4 py-2 shadow-sm">
+                                            <i class="fa-solid fa-file-pdf text-gold-400 me-2"></i> Generate PDF Quality Dossier
+                                        </button>
+                                        <button type="submit" formaction="{{ url_for('admin_export_excel') }}" class="btn btn-outline-success px-4 py-2 shadow-sm">
+                                            <i class="fa-solid fa-file-excel me-2"></i> Export Structured CSV/Excel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Live Database Status Metric Card -->
+                        <div class="p-4 rounded-3 border bg-white shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 50px; height: 50px; background: rgba(15, 43, 72, 0.08);">
+                                    <i class="fa-solid fa-database fa-lg text-navy-900"></i>
+                                </div>
+                                <div>
+                                    <h6 class="m-0 fw-bold text-navy-950">Active Database Synchronization State</h6>
+                                    <p class="small text-muted m-0">Securely maintaining <strong>{{ total_records }}</strong> total logged grievances as of {{ current_date.strftime('%d %b %Y, %I:%M %p') }}.</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-success-subtle text-success font-mono px-3 py-2 border border-success-subtle">
+                                <i class="fa-solid fa-circle-check me-1"></i> Data Integrity 100%
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

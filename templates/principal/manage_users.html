@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Accounts | Principal Executive Console</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        .portal-sidebar.principal-sidebar {
+            background: linear-gradient(180deg, #071526 0%, #030a14 100%);
+            border-right: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-header {
+            border-bottom: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-crest {
+            background: rgba(197, 155, 39, 0.15);
+            color: var(--gold-400);
+            border: 2px solid var(--gold-500);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-menu a.active {
+            background: rgba(197, 155, 39, 0.12);
+            color: #ffffff;
+            border-left-color: var(--gold-500);
+        }
+
+        .nav-tabs-official .nav-link {
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            color: #64748b;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 12px 24px;
+            background: transparent;
+        }
+
+        .nav-tabs-official .nav-link.active {
+            color: var(--navy-900);
+            border-bottom-color: var(--navy-900);
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Principal Executive Sidebar -->
+        <aside class="portal-sidebar principal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5 style="color: var(--gold-400);">PRINCIPAL CELL</h5>
+                    <span>Executive Oversight</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Executive Command</div>
+                <a href="{{ url_for('principal_dashboard') }}">
+                    <i class="fa-solid fa-chart-line"></i> <span>Executive Analytics</span>
+                </a>
+                <a href="{{ url_for('principal_escalations') }}">
+                    <i class="fa-solid fa-fire text-danger"></i> <span>Critical Escalations</span>
+                </a>
+                <a href="{{ url_for('principal_master_records') }}">
+                    <i class="fa-solid fa-database"></i> <span>Master Global Records</span>
+                </a>
+                <a href="{{ url_for('principal_notices') }}">
+                    <i class="fa-solid fa-bullhorn text-gold-400"></i> <span>Notices & Bulletins</span>
+                </a>
+                
+                <div class="menu-category">Institutional Governance</div>
+                <a href="{{ url_for('principal_manage_users') }}" class="active">
+                    <i class="fa-solid fa-users-gear"></i> <span>User & Admin Accounts</span>
+                </a>
+                <a href="{{ url_for('principal_settings') }}">
+                    <i class="fa-solid fa-sliders"></i> <span>System Governance</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">Office of Principal</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">Supreme Authority</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Institutional Access & Identity Governance</h5>
+                        <span class="small text-muted">Provision Administrative Officers & Audit Enrolled Student Registry</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-navy" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+                        <i class="fa-solid fa-user-plus me-1 text-gold-400"></i> Provision Admin Officer
+                    </button>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-info me-2"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-tabs nav-tabs-official border-bottom mb-4" id="userTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="admins-tab" data-bs-toggle="tab" data-bs-target="#adminsPane" type="button" role="tab">
+                            <i class="fa-solid fa-shield-halved text-navy-800 me-2"></i> Administrative Staff ({{ admins|length }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="students-tab" data-bs-toggle="tab" data-bs-target="#studentsPane" type="button" role="tab">
+                            <i class="fa-solid fa-user-graduate text-navy-800 me-2"></i> Enrolled Students ({{ students|length }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="revoked-tab" data-bs-toggle="tab" data-bs-target="#revokedPane" type="button" role="tab">
+                            <i class="fa-solid fa-user-slash text-danger me-2"></i> Revoked Students ({{ revoked_students|length }})
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="userTabsContent">
+                    
+                    <!-- ADMINS PANE -->
+                    <div class="tab-pane fade show active" id="adminsPane" role="tabpanel">
+                        <div class="card card-official">
+                            <div class="card-header d-flex align-items-center justify-content-between py-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-id-badge text-gold-500"></i>
+                                    <h6 class="m-0 fw-bold font-heading text-white">Active Facility Administrators</h6>
+                                </div>
+                                <button class="btn btn-sm btn-gold font-mono" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+                                    <i class="fa-solid fa-plus me-1"></i> New Staff Account
+                                </button>
+                            </div>
+
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-official mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Officer ID</th>
+                                                <th>Account Username</th>
+                                                <th>Official College Email</th>
+                                                <th>Access Level</th>
+                                                <th class="text-end">Revocation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for admin in admins %}
+                                            <tr>
+                                                <td class="font-mono fw-bold text-navy-900">ADM-00{{ admin.id }}</td>
+                                                <td class="fw-semibold text-dark">{{ admin.username }}</td>
+                                                <td class="font-mono small text-muted">{{ admin.email }}</td>
+                                                <td>
+                                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono">
+                                                        Operational Admin
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                    {% if admin.username == 'admin' %}
+                                                        <span class="badge bg-secondary font-mono text-white px-2 py-1">
+                                                            <i class="fa-solid fa-lock me-1"></i> Root Administrator
+                                                        </span>
+                                                    {% else %}
+                                                        <form method="POST" action="{{ url_for('principal_revoke_admin', id=admin.id) }}" 
+                                                              onsubmit="return confirm('REVOKE ADMINISTRATIVE PRIVILEGES?\n\nOfficer: {{ admin.username }}\nEmail: {{ admin.email }}\n\nThis will permanently delete this administrative account and block all future logins.');" 
+                                                              style="display:inline;">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger font-mono">
+                                                                <i class="fa-solid fa-user-slash me-1"></i> Revoke Access
+                                                            </button>
+                                                        </form>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td colspan="5" class="text-center py-4 text-muted">No staff accounts found.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STUDENTS PANE -->
+                    <div class="tab-pane fade" id="studentsPane" role="tabpanel">
+                        <div class="card card-official">
+                            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3 py-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-users text-gold-500"></i>
+                                    <h6 class="m-0 fw-bold font-heading text-white">Verified Enrolled Student Registry</h6>
+                                </div>
+
+                                <div class="input-group input-group-sm" style="max-width: 300px;">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                    <input type="text" id="studentSearchInput" class="form-control border-0" placeholder="Filter Roll No or Student Name...">
+                                </div>
+                            </div>
+
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-official mb-0" id="studentsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Roll Number</th>
+                                                <th>Student Legal Name</th>
+                                                <th>Personal Registered Email</th>
+                                                <th>Enrollment State</th>
+                                                <th class="text-end">Administrative Sanction</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for student in students %}
+                                            <tr>
+                                                <td class="font-mono fw-bold text-navy-900 search-roll">{{ student.roll_number }}</td>
+                                                <td class="fw-semibold text-dark search-name">{{ student.student_name }}</td>
+                                                <td class="font-mono small text-muted">{{ student.personal_email }}</td>
+                                                <td>
+                                                    <span class="badge bg-success-subtle text-success border border-success-subtle font-mono">
+                                                        <i class="fa-solid fa-circle-check me-1"></i> Active Enrolled
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <form method="POST" action="{{ url_for('principal_revoke_student', id=student.id) }}" 
+                                                          onsubmit="return confirm('PERMANENTLY REVOKE ACCESS &amp; DELETE STUDENT?\n\nRoll Number: {{ student.roll_number }}\nStudent Name: {{ student.student_name }}\n\nThis will permanently delete this student account, block all login permissions, and revoke registration.');" 
+                                                          style="display:inline;">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger font-mono">
+                                                            <i class="fa-solid fa-user-slash me-1"></i> Revoke Access
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td colspan="5" class="text-center py-4 text-muted">No student accounts registered in the database.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REVOKED STUDENTS PANE -->
+                    <div class="tab-pane fade" id="revokedPane" role="tabpanel">
+                        <div class="card card-official">
+                            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3 py-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-user-slash text-danger"></i>
+                                    <h6 class="m-0 fw-bold font-heading text-white">Administratively Sanctioned / Revoked Accounts</h6>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-official mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Roll Number</th>
+                                                <th>Revocation Date</th>
+                                                <th>Administrative Grounds</th>
+                                                <th>Sanction Status</th>
+                                                <th class="text-end">Remedy</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for rev in revoked_students %}
+                                            <tr>
+                                                <td class="font-mono fw-bold text-danger">{{ rev.roll_number }}</td>
+                                                <td class="font-mono small text-muted">{{ rev.revoked_at.strftime('%d %b %Y, %I:%M %p') if rev.revoked_at else 'Recent' }}</td>
+                                                <td class="small text-dark">{{ rev.reason }}</td>
+                                                <td>
+                                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono">
+                                                        <i class="fa-solid fa-ban me-1"></i> Access Blocked
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <form method="POST" action="{{ url_for('principal_unrevoke_student', id=rev.id) }}"
+                                                          onsubmit="return confirm('LIFT ACCESS SANCTIONS FOR {{ rev.roll_number }}?\n\nThis will remove the registration block and permit the student to register or access the portal.');"
+                                                          style="display:inline;">
+                                                        <button type="submit" class="btn btn-sm btn-outline-success font-mono">
+                                                            <i class="fa-solid fa-rotate-left me-1"></i> Lift Sanction
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td colspan="5" class="text-center py-4 text-muted">No students currently sanctioned or revoked.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Provision Admin Modal -->
+    <div class="modal fade" id="addAdminModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content card-official border-0">
+                <div class="modal-header bg-navy text-white py-3">
+                    <h6 class="modal-title font-heading fw-bold">
+                        <i class="fa-solid fa-user-shield text-gold-400 me-2"></i> Provision Administrative Staff Account
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <form action="{{ url_for('principal_manage_users') }}" method="POST">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label-official required">Administrative Officer Username</label>
+                            <input type="text" class="form-control form-control-official" name="username" placeholder="e.g. electrical_admin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-official required">Official Department Email</label>
+                            <input type="email" class="form-control form-control-official" name="email" placeholder="facility_lead@college.edu" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-official required">Temporary Secure Password</label>
+                            <input type="password" class="form-control form-control-official" name="password" placeholder="Create strong temporary credential" required minlength="8">
+                        </div>
+                        <div class="p-3 rounded-3 bg-light border small text-muted">
+                            <i class="fa-solid fa-circle-info text-navy-800 me-1"></i>
+                            This staff member will immediately receive access to the Administrative Redressal Console to inspect grievances.
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light py-3">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-navy px-4">
+                            <i class="fa-solid fa-user-check text-gold-400 me-1"></i> Provision Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle & Live Student Search -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Live Student Search
+        const searchInput = document.getElementById('studentSearchInput');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                const term = this.value.toLowerCase().trim();
+                const rows = document.querySelectorAll('#studentsTable tbody tr');
+
+                rows.forEach(row => {
+                    if (row.cells.length === 1) return; // skip empty
+                    const roll = row.querySelector('.search-roll') ? row.querySelector('.search-roll').innerText.toLowerCase() : '';
+                    const name = row.querySelector('.search-name') ? row.querySelector('.search-name').innerText.toLowerCase() : '';
+
+                    if (roll.includes(term) || name.includes(term)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

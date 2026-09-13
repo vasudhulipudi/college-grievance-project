@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grievance Timeline | College Grievance & Facility Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        /* Vertical Milestone Tracker */
+        .timeline-container {
+            position: relative;
+            padding-left: 55px;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            bottom: 24px;
+            width: 3px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .milestone-item {
+            position: relative;
+            margin-bottom: 35px;
+        }
+
+        .milestone-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .milestone-node {
+            position: absolute;
+            left: -55px;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #cbd5e1;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            z-index: 2;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .milestone-item.active .milestone-node {
+            border-color: var(--navy-800);
+            background: var(--navy-800);
+            color: white;
+            box-shadow: 0 0 0 5px rgba(15, 43, 72, 0.15);
+        }
+
+        .milestone-item.passed .milestone-node {
+            border-color: #10b981;
+            background: #10b981;
+            color: white;
+        }
+
+        .milestone-item.closed .milestone-node {
+            border-color: #334155;
+            background: #334155;
+            color: white;
+        }
+
+        .milestone-content {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .milestone-item.active .milestone-content {
+            border-left: 4px solid var(--navy-800);
+            box-shadow: 0 8px 20px rgba(15, 43, 72, 0.06);
+        }
+
+        .milestone-item.passed .milestone-content {
+            border-left: 4px solid #10b981;
+        }
+
+        .official-directive-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 5px solid var(--navy-800);
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(15, 43, 72, 0.04);
+            transition: all 0.2s ease;
+        }
+
+        .official-directive-card:hover {
+            box-shadow: 0 6px 16px rgba(15, 43, 72, 0.08);
+        }
+
+        .official-directive-card.principal-card {
+            border-left-color: var(--gold-500);
+            background: #fffdf7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Academic Sidebar -->
+        <aside class="portal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5>STUDENT CELL</h5>
+                    <span>Grievance Redressal</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Main Navigation</div>
+                <a href="{{ url_for('student_dashboard') }}">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Dashboard Overview</span>
+                </a>
+                <a href="{{ url_for('submit_complaint') }}">
+                    <i class="fa-solid fa-pen-to-square"></i> <span>Lodge Grievance</span>
+                </a>
+                <a href="{{ url_for('student_my_complaints') }}">
+                    <i class="fa-solid fa-table-list"></i> <span>My Grievances</span>
+                </a>
+                <a href="{{ url_for('student_timeline') }}" class="active">
+                    <i class="fa-solid fa-timeline"></i> <span>Milestone Timeline</span>
+                </a>
+                
+                <div class="menu-category">Campus & Account</div>
+                <a href="{{ url_for('student_announcements') }}">
+                    <i class="fa-solid fa-bullhorn"></i> <span>Notices & Bulletins</span>
+                </a>
+                <a href="{{ url_for('student_profile') }}">
+                    <i class="fa-solid fa-id-card"></i> <span>Student Profile</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">{{ current_user.student_name }}</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">{{ current_user.roll_number }}</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Milestone Resolution Journey</h5>
+                        <span class="small text-muted">Real-Time Stage-by-Stage Verification & Tracking</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ url_for('student_my_complaints') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back to My Grievances
+                    </a>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <div class="row justify-content-center">
+                    <div class="col-xl-8 col-lg-10">
+                        
+                        {% if complaint %}
+                        <!-- Ticket Summary Header Card -->
+                        <div class="card card-official mb-4">
+                            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+                                <div>
+                                    <span class="small text-white-50 text-uppercase letter-spacing-1">Tracking Incident</span>
+                                    <h5 class="m-0 fw-bold font-heading text-white">{{ complaint.complaint_ref_id }}</h5>
+                                </div>
+                                <span class="badge {% if complaint.status == 'Resolved' %}bg-success text-white{% elif complaint.status == 'Closed' %}bg-dark text-white{% elif complaint.status == 'In Progress' %}bg-primary text-white{% else %}bg-warning text-dark{% endif %} font-mono px-3 py-2">
+                                    Current Stage: {{ complaint.status }}
+                                </span>
+                            </div>
+
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-navy-950 mb-2">{{ complaint.title }}</h5>
+                                <p class="text-muted small mb-4" style="line-height: 1.6;">{{ complaint.description }}</p>
+
+                                <div class="row g-3 pt-3 border-top small">
+                                    <div class="col-sm-4">
+                                        <span class="text-muted d-block">Department / Category</span>
+                                        <strong class="text-navy-900 font-mono"><i class="fa-solid fa-tag text-gold-500 me-1"></i> {{ complaint.category }}</strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span class="text-muted d-block">Priority Tier</span>
+                                        <strong class="text-navy-900 font-mono">{{ complaint.priority }} Urgency</strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span class="text-muted d-block">Initial Registration</span>
+                                        <strong class="text-navy-900 font-mono">{{ complaint.submitted_at.strftime('%d %b %Y, %I:%M %p') }}</strong>
+                                    </div>
+                                </div>
+
+                                {% if replies %}
+                                <div class="mt-3 pt-3 border-top d-flex align-items-center justify-content-between flex-wrap gap-2 bg-light p-3 rounded-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-primary text-white font-mono"><i class="fa-solid fa-envelope-open-text me-1"></i> Latest Administrative Message:</span>
+                                        <span class="small text-dark fw-semibold text-truncate" style="max-width: 400px;">{{ replies[0].reply_text }}</span>
+                                    </div>
+                                    <a href="#admin-directives" class="btn btn-sm btn-navy font-mono py-1 px-3">
+                                        <i class="fa-solid fa-arrow-down me-1 text-gold-400"></i> Read Directive{% if replies|length > 1 %}s ({{ replies|length }}){% endif %}
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Milestone Progression -->
+                        <div class="card card-official">
+                            <div class="card-header">
+                                <h6 class="m-0 fw-bold font-heading text-white">
+                                    <i class="fa-solid fa-route text-gold-500 me-2"></i> Redressal Milestones
+                                </h6>
+                            </div>
+
+                            <div class="card-body p-4 p-md-5">
+                                <div class="timeline-container">
+                                    
+                                    <!-- Stage 1: Submitted -->
+                                    <div class="milestone-item {% if complaint.status == 'Submitted' %}active{% else %}passed{% endif %}">
+                                        <div class="milestone-node">
+                                            <i class="fa-solid fa-paper-plane"></i>
+                                        </div>
+                                        <div class="milestone-content">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <h6 class="m-0 fw-bold text-navy-950">1. Grievance Formally Lodged</h6>
+                                                <span class="small font-mono text-muted">{{ complaint.submitted_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                                            </div>
+                                            <p class="small text-muted m-0">The ticket was cryptographically authenticated and securely stored into the master institutional database.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stage 2: Under Review -->
+                                    <div class="milestone-item 
+                                        {% if complaint.status == 'Under Review' %}active
+                                        {% elif complaint.status in ['In Progress', 'Resolved', 'Closed'] %}passed
+                                        {% endif %}">
+                                        <div class="milestone-node">
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                        </div>
+                                        <div class="milestone-content">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <h6 class="m-0 fw-bold text-navy-950">2. Administrative Scrutiny & Verification</h6>
+                                                {% if complaint.status in ['Under Review', 'In Progress', 'Resolved', 'Closed'] %}
+                                                    <span class="badge bg-success-subtle text-success small font-mono">Completed</span>
+                                                {% else %}
+                                                    <span class="badge bg-light text-muted small font-mono">Pending</span>
+                                                {% endif %}
+                                            </div>
+                                            <p class="small text-muted m-0">Assigned administrative cell inspects physical details, verifies facility location, and assesses priority severity.</p>
+
+                                            {% if complaint.status == 'Under Review' and replies %}
+                                            <div class="mt-3 p-3 rounded-3 border-start border-4 border-warning bg-warning-subtle bg-opacity-25 shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <span class="small fw-bold text-warning-emphasis font-mono">
+                                                        <i class="fa-solid fa-clipboard-user me-1"></i> Administrative Scrutiny Directive / Note:
+                                                    </span>
+                                                    <span class="small text-muted font-mono">{{ replies[0].replied_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                                                </div>
+                                                <div class="text-dark small fw-medium" style="white-space: pre-line; line-height: 1.6;">{{ replies[0].reply_text }}</div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!-- Stage 3: In Progress -->
+                                    <div class="milestone-item 
+                                        {% if complaint.status == 'In Progress' %}active
+                                        {% elif complaint.status in ['Resolved', 'Closed'] %}passed
+                                        {% endif %}">
+                                        <div class="milestone-node">
+                                            <i class="fa-solid fa-gears"></i>
+                                        </div>
+                                        <div class="milestone-content">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <h6 class="m-0 fw-bold text-navy-950">3. Active Remediation & Engineering Dispatch</h6>
+                                                {% if complaint.status == 'In Progress' %}
+                                                    <span class="badge bg-primary small font-mono">In Execution</span>
+                                                {% elif complaint.status in ['Resolved', 'Closed'] %}
+                                                    <span class="badge bg-success-subtle text-success small font-mono">Completed</span>
+                                                {% else %}
+                                                    <span class="badge bg-light text-muted small font-mono">Queued</span>
+                                                {% endif %}
+                                            </div>
+                                            <p class="small text-muted m-0">Campus physical facilities, contractor, or academic department is actively executing maintenance or corrective actions.</p>
+
+                                            {% if complaint.status == 'In Progress' and replies %}
+                                            <div class="mt-3 p-3 rounded-3 border-start border-4 border-primary bg-primary-subtle bg-opacity-25 shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <span class="small fw-bold text-primary-emphasis font-mono">
+                                                        <i class="fa-solid fa-wrench me-1"></i> Active Remediation Directive / Progress Note:
+                                                    </span>
+                                                    <span class="small text-muted font-mono">{{ replies[0].replied_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                                                </div>
+                                                <div class="text-dark small fw-medium" style="white-space: pre-line; line-height: 1.6;">{{ replies[0].reply_text }}</div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!-- Stage 4: Resolved -->
+                                    <div class="milestone-item 
+                                        {% if complaint.status == 'Resolved' %}active
+                                        {% elif complaint.status == 'Closed' %}passed
+                                        {% endif %}">
+                                        <div class="milestone-node">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        </div>
+                                        <div class="milestone-content">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <h6 class="m-0 fw-bold text-navy-950">4. Official Resolution Provided</h6>
+                                                {% if complaint.status in ['Resolved', 'Closed'] %}
+                                                    <span class="badge bg-success small font-mono">Resolved</span>
+                                                {% else %}
+                                                    <span class="badge bg-light text-muted small font-mono">Pending</span>
+                                                {% endif %}
+                                            </div>
+                                            <p class="small text-muted m-0">The problem has been rectified, tested, and certified by the supervising administration staff.</p>
+
+                                            {% if complaint.status in ['Resolved', 'Closed'] and replies %}
+                                            <div class="mt-3 p-3 rounded-3 border-start border-4 border-success bg-success-subtle bg-opacity-25 shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <span class="small fw-bold text-success-emphasis font-mono">
+                                                        <i class="fa-solid fa-clipboard-check me-1"></i> Official Resolution Directive / Note:
+                                                    </span>
+                                                    <span class="small text-muted font-mono">{{ replies[0].replied_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                                                </div>
+                                                <div class="text-dark small fw-medium" style="white-space: pre-line; line-height: 1.6;">{{ replies[0].reply_text }}</div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!-- Stage 5: Closed -->
+                                    <div class="milestone-item {% if complaint.status == 'Closed' %}active closed{% endif %}">
+                                        <div class="milestone-node">
+                                            <i class="fa-solid fa-lock"></i>
+                                        </div>
+                                        <div class="milestone-content">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <h6 class="m-0 fw-bold text-navy-950">5. Case Officially Closed</h6>
+                                                {% if complaint.status == 'Closed' %}
+                                                    <span class="badge bg-dark text-white small font-mono">Closed</span>
+                                                {% else %}
+                                                    <span class="badge bg-light text-muted small font-mono">Final Step</span>
+                                                {% endif %}
+                                            </div>
+                                            <p class="small text-muted m-0">The record is formally archived in the institutional registry with quality satisfaction metrics.</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Official Written Directives & Communication from Administration -->
+                        <div class="card card-official mt-4" id="admin-directives">
+                            <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3 py-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-envelope-open-text text-gold-500 fs-5"></i>
+                                    <div>
+                                        <h6 class="m-0 fw-bold font-heading text-white">Official Administrative Directives &amp; Resolution Notes</h6>
+                                        <small class="text-white-50">Concrete updates, dispatch notices, and official directives transmitted to you</small>
+                                    </div>
+                                </div>
+                                {% if replies %}
+                                <span class="badge bg-gold text-navy-950 font-mono px-3 py-2">
+                                    <i class="fa-solid fa-comments me-1"></i> {{ replies|length }} Directive{% if replies|length > 1 %}s{% endif %} Logged
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="card-body p-4">
+                                {% if replies %}
+                                    {% for reply in replies %}
+                                    <div class="official-directive-card {% if reply.replied_by_role == 'Principal' %}principal-card{% endif %}">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2 pb-2 border-bottom">
+                                            <div class="d-flex align-items-center gap-2">
+                                                {% if reply.replied_by_role == 'Principal' %}
+                                                    <span class="badge bg-danger text-white font-mono px-2 py-1">
+                                                        <i class="fa-solid fa-crown text-warning me-1"></i> Principal &amp; Head of Institution
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-navy text-white font-mono px-2 py-1">
+                                                        <i class="fa-solid fa-user-shield text-gold-400 me-1"></i> Facility Administration Staff
+                                                    </span>
+                                                {% endif %}
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle font-mono small">
+                                                    <i class="fa-solid fa-check-double me-1"></i> Official Transmitted Note
+                                                </span>
+                                            </div>
+                                            <span class="small font-mono text-muted">
+                                                <i class="fa-regular fa-clock me-1"></i> {{ reply.replied_at.strftime('%d %b %Y, %I:%M %p') }}
+                                            </span>
+                                        </div>
+                                        <div class="text-dark py-1" style="white-space: pre-line; line-height: 1.7; font-size: 0.95rem;">
+                                            {{ reply.reply_text }}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="text-center py-4 text-muted">
+                                        <i class="fa-solid fa-message-slash fa-2x text-secondary mb-2 d-block"></i>
+                                        <h6 class="fw-semibold text-secondary mb-1">No Administrative Directives Dispatched Yet</h6>
+                                        <p class="small text-muted mb-0">When administrative staff or the Principal update this grievance and enter an official directive or resolution note, it will appear here in real-time.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% else %}
+                        <!-- Empty Selection State -->
+                        <div class="card card-official text-center py-5">
+                            <div class="card-body py-5">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4" 
+                                     style="width: 80px; height: 80px; background: rgba(15, 43, 72, 0.08);">
+                                    <i class="fa-solid fa-magnifying-glass-chart fa-3x text-navy-900"></i>
+                                </div>
+                                <h4 class="font-heading fw-bold text-navy-950 mb-2">No Specific Grievance Selected</h4>
+                                <p class="text-muted small mx-auto mb-4" style="max-width: 480px;">
+                                    To review live milestone progression and physical resolution checkpoints, please select a ticket from your personal grievance list.
+                                </p>
+                                <a href="{{ url_for('student_my_complaints') }}" class="btn btn-navy px-4 py-2">
+                                    <i class="fa-solid fa-list-check me-2 text-gold-400"></i> View My Grievances
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

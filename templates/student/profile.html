@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile | College Grievance & Facility Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Academic Sidebar -->
+        <aside class="portal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5>STUDENT CELL</h5>
+                    <span>Grievance Redressal</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Main Navigation</div>
+                <a href="{{ url_for('student_dashboard') }}">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Dashboard Overview</span>
+                </a>
+                <a href="{{ url_for('submit_complaint') }}">
+                    <i class="fa-solid fa-pen-to-square"></i> <span>Lodge Grievance</span>
+                </a>
+                <a href="{{ url_for('student_my_complaints') }}">
+                    <i class="fa-solid fa-table-list"></i> <span>My Grievances</span>
+                </a>
+                <a href="{{ url_for('student_timeline') }}">
+                    <i class="fa-solid fa-timeline"></i> <span>Milestone Timeline</span>
+                </a>
+                
+                <div class="menu-category">Campus & Account</div>
+                <a href="{{ url_for('student_announcements') }}">
+                    <i class="fa-solid fa-bullhorn"></i> <span>Notices & Bulletins</span>
+                </a>
+                <a href="{{ url_for('student_profile') }}" class="active">
+                    <i class="fa-solid fa-id-card"></i> <span>Student Profile</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">{{ current_user.student_name }}</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">{{ current_user.roll_number }}</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Enrolled Student Dossier</h5>
+                        <span class="small text-muted">Institutional Identity & Verification Credentials</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="portal-user-badge">
+                        <i class="fa-solid fa-circle-check text-success"></i>
+                        <span>Active Enrolled Student</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Alert Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-info me-2"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <div class="row justify-content-center">
+                    <div class="col-xl-8 col-lg-10">
+                        
+                        <div class="card card-official overflow-hidden">
+                            <!-- Banner Header with College Crest -->
+                            <div class="p-5 text-center text-white" style="background: linear-gradient(135deg, var(--navy-950) 0%, var(--navy-800) 100%); border-bottom: 3px solid var(--gold-500);">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-4 border-white mb-3 shadow" 
+                                     style="width: 100px; height: 100px; background: rgba(197, 155, 39, 0.2); backdrop-filter: blur(5px);">
+                                    <i class="fa-solid fa-user-graduate fa-3x text-gold-400"></i>
+                                </div>
+                                <h3 class="font-heading fw-bold mb-1">{{ current_user.student_name }}</h3>
+                                <div class="font-mono text-gold-400 fs-6 mb-2">College Roll No: {{ current_user.roll_number }}</div>
+                                <span class="badge bg-success px-3 py-1 font-mono">
+                                    <i class="fa-solid fa-certificate me-1"></i> Verified Academic Account
+                                </span>
+                            </div>
+
+                            <div class="card-body p-4 p-md-5">
+                                <h6 class="font-heading fw-bold text-navy-950 mb-4 pb-2 border-bottom">
+                                    <i class="fa-solid fa-id-badge text-gold-500 me-2"></i> Official Enrolment Attributes
+                                </h6>
+
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded-3 border bg-light">
+                                            <span class="small text-muted text-uppercase fw-semibold d-block mb-1">Full Legal Name</span>
+                                            <div class="fs-6 fw-bold text-navy-950">{{ current_user.student_name }}</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded-3 border bg-light">
+                                            <span class="small text-muted text-uppercase fw-semibold d-block mb-1">Enrolment Identifier</span>
+                                            <div class="fs-6 fw-bold text-navy-950 font-mono">{{ current_user.roll_number }}</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded-3 border bg-light">
+                                            <span class="small text-muted text-uppercase fw-semibold d-block mb-1">Dispatches & Notifications Email</span>
+                                            <div class="fs-6 fw-bold text-navy-950 font-mono">{{ current_user.personal_email }}</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded-3 border bg-light">
+                                            <span class="small text-muted text-uppercase fw-semibold d-block mb-1">System Privilege Tier</span>
+                                            <div class="fs-6 fw-bold text-success">
+                                                <i class="fa-solid fa-shield-check me-1"></i> Standard Student (Full Submissions Access)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Account Security & Credentials Management -->
+                                <h6 class="font-heading fw-bold text-navy-950 mb-4 pb-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <span><i class="fa-solid fa-user-shield text-gold-500 me-2"></i> Account Security & Credentials</span>
+                                    <span class="small text-muted fw-normal" style="font-size: 0.78rem;">Update notification email or change login password</span>
+                                </h6>
+
+                                <div class="row g-4 mb-4">
+                                    <!-- Card 1: Change Email -->
+                                    <div class="col-lg-6">
+                                        <div class="card h-100 border shadow-sm" style="border-radius: 10px; overflow: hidden;">
+                                            <div class="card-header bg-light py-3 px-3 d-flex align-items-center gap-2 border-bottom">
+                                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(15, 43, 72, 0.1); color: var(--navy-800);">
+                                                    <i class="fa-solid fa-envelope fs-6"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="m-0 fw-bold text-navy-950" style="font-size: 0.92rem;">Update Notification Email</h6>
+                                                    <span class="small text-muted" style="font-size: 0.75rem;">Change email for receipts and SLA updates</span>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-3 p-md-4">
+                                                <form action="{{ url_for('student_update_email') }}" method="POST">
+                                                    <div class="mb-3">
+                                                        <label class="form-label small fw-semibold text-muted mb-1">Current Registered Email</label>
+                                                        <input type="text" class="form-control form-control-sm bg-light font-mono" value="{{ current_user.personal_email }}" readonly disabled>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="new_email" class="form-label small fw-bold text-navy-950 mb-1">New Email Address <span class="text-danger">*</span></label>
+                                                        <input type="email" class="form-control form-control-sm font-mono" id="new_email" name="new_email" placeholder="e.g., yourname@gmail.com" required>
+                                                        <div class="form-text small" style="font-size: 0.72rem;">Must be an active, valid email address.</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="email_current_password" class="form-label small fw-bold text-navy-950 mb-1">Current Password <span class="text-danger">*</span></label>
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="password" class="form-control font-mono" id="email_current_password" name="current_password" placeholder="Verify password to confirm" required>
+                                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('email_current_password', 'eye_email_pwd')">
+                                                                <i class="fa-regular fa-eye" id="eye_email_pwd"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="form-text small" style="font-size: 0.72rem;">Required to authorize email modification.</div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-navy btn-sm w-100 py-2 fw-bold">
+                                                        <i class="fa-solid fa-paper-plane text-gold-400 me-1"></i> Update Email Address
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 2: Change Password -->
+                                    <div class="col-lg-6">
+                                        <div class="card h-100 border shadow-sm" style="border-radius: 10px; overflow: hidden;">
+                                            <div class="card-header bg-light py-3 px-3 d-flex align-items-center gap-2 border-bottom">
+                                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(223, 183, 67, 0.15); color: #856404;">
+                                                    <i class="fa-solid fa-key fs-6"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="m-0 fw-bold text-navy-950" style="font-size: 0.92rem;">Change Account Password</h6>
+                                                    <span class="small text-muted" style="font-size: 0.75rem;">Keep your student account secure</span>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-3 p-md-4">
+                                                <form action="{{ url_for('student_change_password') }}" method="POST">
+                                                    <div class="mb-3">
+                                                        <label for="pwd_current" class="form-label small fw-bold text-navy-950 mb-1">Current Password <span class="text-danger">*</span></label>
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="password" class="form-control font-mono" id="pwd_current" name="current_password" placeholder="Enter current password" required>
+                                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('pwd_current', 'eye_pwd_curr')">
+                                                                <i class="fa-regular fa-eye" id="eye_pwd_curr"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="pwd_new" class="form-label small fw-bold text-navy-950 mb-1">New Password <span class="text-danger">*</span></label>
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="password" class="form-control font-mono" id="pwd_new" name="new_password" minlength="6" placeholder="Min. 6 characters" required>
+                                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('pwd_new', 'eye_pwd_new')">
+                                                                <i class="fa-regular fa-eye" id="eye_pwd_new"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="pwd_confirm" class="form-label small fw-bold text-navy-950 mb-1">Confirm New Password <span class="text-danger">*</span></label>
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="password" class="form-control font-mono" id="pwd_confirm" name="confirm_password" minlength="6" placeholder="Repeat new password" required>
+                                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('pwd_confirm', 'eye_pwd_conf')">
+                                                                <i class="fa-regular fa-eye" id="eye_pwd_conf"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-navy btn-sm w-100 py-2 fw-bold">
+                                                        <i class="fa-solid fa-lock text-gold-400 me-1"></i> Update Account Password
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Security Policy Assurance Box -->
+                                <div class="p-4 rounded-3 d-flex align-items-start gap-3 border" style="background: rgba(15, 43, 72, 0.03); border-color: rgba(15, 43, 72, 0.1) !important;">
+                                    <i class="fa-solid fa-shield-halved fa-2x text-navy-800 mt-1"></i>
+                                    <div>
+                                        <h6 class="fw-bold text-navy-950 mb-1">Student Protection & Whistleblower Shield</h6>
+                                        <p class="small text-muted m-0" style="line-height: 1.6;">
+                                            Your personal details are isolated from the routine Administrative staff resolving your complaints to eliminate bias, favoritism, or retaliation. Only in exceptional scenarios where an unresolved grievance automatically breaches safety SLA thresholds does the Principal hold oversight authority to inspect student particulars.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+                                    <a href="{{ url_for('student_dashboard') }}" class="btn btn-outline-secondary">
+                                        <i class="fa-solid fa-arrow-left me-1"></i> Return to Dashboard
+                                    </a>
+                                    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+                                        <i class="fa-solid fa-power-off me-1"></i> Terminate Session
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Toggle Password Visibility Eye Function
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>

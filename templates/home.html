@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Grievance & Facility Management System | Official Portal</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- ==========================================
+         OFFICIAL INSTITUTIONAL ENTRANCE ANIMATION SPLASH
+         ========================================== -->
+    <div id="entranceSplash" class="entrance-splash">
+        <!-- Discreet Skip Button -->
+        <button class="splash-skip-btn" onclick="dismissSplash(true)" title="Skip intro and enter portal immediately">
+            Skip Intro <i class="fa-solid fa-arrow-right ms-1"></i>
+        </button>
+
+        <div class="splash-container">
+            <!-- Animated Official Crest Emblem with YouTube-Style Kinetic Intro -->
+            <div class="splash-logo-wrap">
+                <!-- YouTube Sonic Shockwave Energy Blast Rings -->
+                <div class="splash-shockwave shockwave-1"></div>
+                <div class="splash-shockwave shockwave-2"></div>
+                <div class="splash-shockwave shockwave-3"></div>
+
+                <!-- YouTube Radiant Neon Aura Backlight -->
+                <div class="splash-backlight-aura"></div>
+
+                <!-- YouTube Twinkling Motion Sparkle Starbursts -->
+                <div class="splash-sparkle sparkle-top-right">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/></svg>
+                </div>
+                <div class="splash-sparkle sparkle-top-left">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/></svg>
+                </div>
+                <div class="splash-sparkle sparkle-bottom-left">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/></svg>
+                </div>
+                <div class="splash-sparkle sparkle-bottom-right">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/></svg>
+                </div>
+
+                <!-- Concentric Orbital Rings -->
+                <div class="splash-orbit-outer"></div>
+                <div class="splash-orbit-inner"></div>
+                
+                <!-- Central Emblem Disc with YouTube Spring Pop & 3D Levitation -->
+                <div class="splash-crest-disc" onclick="dismissSplash(true)" title="Enter Portal">
+                    <!-- YouTube High-Velocity Lens Flare Beam -->
+                    <div class="splash-lens-flare"></div>
+
+                    <!-- High-Definition Official Academic Crest SVG -->
+                    <svg class="splash-crest-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Orbit and Base Ring -->
+                        <circle cx="70" cy="70" r="64" stroke="url(#goldGradSplash)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+                        <circle cx="70" cy="70" r="54" stroke="url(#goldGradSplash)" stroke-width="1" opacity="0.8"/>
+                        <circle cx="70" cy="70" r="48" fill="#0b1f35" stroke="url(#goldGradSplash)" stroke-width="2"/>
+                        
+                        <!-- Crest Star of Excellence -->
+                        <path d="M70 27 L72 31.5 L76.5 32 L73 35 L74 39.5 L70 37 L66 39.5 L67 35 L63.5 32 L68 31.5 Z" fill="#dfb743"/>
+                        
+                        <!-- Official Academic Mortarboard Cap -->
+                        <polygon points="70,43 102,56 70,69 38,56" fill="url(#goldGradSplash)" stroke="#edd284" stroke-width="1.2"/>
+                        <path d="M51 61.5 L51 75 C51 83.5 89 83.5 89 75 L89 61.5" fill="#071320" stroke="url(#goldGradSplash)" stroke-width="2"/>
+                        
+                        <!-- Academic Tassel -->
+                        <path d="M94 58 L98 73 C99 77 97 81 95 83" stroke="#edd284" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="95" cy="84" r="2.2" fill="#dfb743"/>
+                        
+                        <!-- Institutional Laurels of Quality & Equity -->
+                        <path d="M41 87 C43 98 55 106 70 106 C85 106 97 98 99 87" stroke="url(#goldGradSplash)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                        <!-- Laurel Berries & Leaves -->
+                        <circle cx="43" cy="90" r="2.5" fill="#dfb743"/>
+                        <circle cx="51" cy="98" r="2.5" fill="#dfb743"/>
+                        <circle cx="61" cy="104" r="2.5" fill="#dfb743"/>
+                        <circle cx="79" cy="104" r="2.5" fill="#dfb743"/>
+                        <circle cx="89" cy="98" r="2.5" fill="#dfb743"/>
+                        <circle cx="97" cy="90" r="2.5" fill="#dfb743"/>
+
+                        <defs>
+                            <linearGradient id="goldGradSplash" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#edd284"/>
+                                <stop offset="50%" stop-color="#c59b27"/>
+                                <stop offset="100%" stop-color="#9e791b"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+
+                    <!-- Shimmer Ray -->
+                    <div class="splash-shimmer-sweep"></div>
+                </div>
+            </div>
+
+            <!-- Typography -->
+            <div class="splash-text-wrap">
+                <div class="splash-badge">
+                    <i class="fa-solid fa-shield-halved me-1"></i> Official Institutional Portal
+                </div>
+                <h1 class="splash-title font-heading">
+                    COLLEGE GRIEVANCE REDRESSAL
+                    <span class="splash-sub-title">&amp; FACILITY MANAGEMENT SYSTEM</span>
+                </h1>
+                <p class="splash-caption">Autonomous Academic Quality Assurance &amp; Institutional Governance Cell</p>
+            </div>
+
+            <!-- Loading Progression -->
+            <div class="splash-loader-wrap">
+                <div class="splash-progress-bar">
+                    <div class="splash-progress-fill"></div>
+                </div>
+                <div class="splash-status-text" id="splashStatus">
+                    <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Initializing Secure Institutional Environment...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Government / Academic Header Ribbon -->
+    <div class="official-top-ribbon">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-building-columns text-warning"></i>
+                <span class="seal-badge">Institutional Redressal Cell</span>
+                <span class="d-none d-md-inline text-white-50">| Accredited Autonomous Institution</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="d-none d-sm-inline text-white-50"><i class="fa-solid fa-shield-halved text-warning me-1"></i> 100% Confidential & Secure</span>
+                <a href="mailto:dhulipudisuryakiransrinivas@gmail.com" class="text-white text-decoration-none"><i class="fa-solid fa-envelope text-warning me-1"></i> dhulipudisuryakiransrinivas@gmail.com</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Official Glassmorphism Navigation Bar -->
+    <nav class="navbar navbar-expand-lg official-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <div class="crest-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <div class="brand-title">CAMPUS REDRESSAL PORTAL</div>
+                    <div class="brand-sub">College Grievance & Facility Management</div>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#officialNavbar" style="border-color: rgba(255,255,255,0.4);">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="officialNavbar">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('home') }}"><i class="fa-solid fa-house me-1"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features"><i class="fa-solid fa-circle-check me-1"></i> Key Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#workflow"><i class="fa-solid fa-diagram-project me-1"></i> Process</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact"><i class="fa-solid fa-envelope me-1"></i> Helpdesk</a></li>
+                    
+                    <!-- Direct Register -->
+                    <li class="nav-item ms-lg-2 my-2 my-lg-0">
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-gold btn-sm">
+                            <i class="fa-solid fa-id-card"></i> Student Register
+                        </a>
+                    </li>
+
+                    <!-- Login Portals Dropdown -->
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="btn btn-gold btn-sm dropdown-toggle font-weight-bold" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-right-to-bracket"></i> Official Login
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-top: 3px solid var(--gold-500) !important;">
+                            <li><h6 class="dropdown-header text-uppercase fw-bold text-primary">Select Authorized Role</h6></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('login', role='student') }}"><i class="fa-solid fa-user-graduate text-primary me-2"></i> Student Portal</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('login', role='admin') }}"><i class="fa-solid fa-user-tie text-primary me-2"></i> Department Admin</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('login', role='principal') }}"><i class="fa-solid fa-user-shield text-danger me-2"></i> Principal / Super Admin</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Campus Background Image -->
+    <section class="hero-campus-wrapper">
+        <div class="hero-campus-overlay"></div>
+        <div class="container hero-campus-content">
+            <div class="row align-items-center g-5">
+                
+                <!-- Hero Left: Welcome & Mission -->
+                <div class="col-lg-7">
+                    <div class="hero-campus-badge">
+                        <i class="fa-solid fa-award"></i> Centralized Grievance Redressal Mechanism
+                    </div>
+                    <h1 class="hero-campus-title">
+                        Empowering Student Voices, <br><span class="accent">Elevating Campus Facilities.</span>
+                    </h1>
+                    <p class="hero-campus-subtitle">
+                        An official, encrypted institutional platform engineered to resolve academic, laboratory, hostel, and infrastructure grievances with strict anonymity and automated SLA escalation oversight.
+                    </p>
+                    
+                    <div class="d-flex flex-wrap gap-3 mb-4">
+                        <a href="{{ url_for('login', role='student') }}" class="btn-gold">
+                            <i class="fa-solid fa-pen-to-square"></i> Lodge a Grievance
+                        </a>
+                        <a href="{{ url_for('register') }}" class="btn-navy">
+                            <i class="fa-solid fa-user-plus"></i> New Student Sign-Up
+                        </a>
+                        <a href="#features" class="btn-outline-gold">
+                            <i class="fa-solid fa-circle-info"></i> Learn More
+                        </a>
+                    </div>
+
+                    <!-- Trust Indicators -->
+                    <div class="d-flex flex-wrap align-items-center gap-4 pt-3 border-top border-secondary border-opacity-50">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-user-shield text-warning fs-5"></i>
+                            <span class="small text-white-50">100% Anonymous to Staff</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-warning fs-5"></i>
+                            <span class="small text-white-50">Automated SLA Escalation</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-envelope-circle-check text-warning fs-5"></i>
+                            <span class="small text-white-50">Real-time Email Alerts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Right: Quick Status Tracker Card -->
+                <div class="col-lg-5">
+                    <div class="tracking-card-hero">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="fa-solid fa-magnifying-glass-location text-warning fs-4"></i>
+                            <h4 class="m-0">Track Grievance Status</h4>
+                        </div>
+                        <p>Enter your unique Reference Ticket ID to quickly check live progress and official remarks.</p>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white border-0 text-primary fw-bold">
+                                <i class="fa-solid fa-hashtag"></i>
+                            </span>
+                            <input type="text" id="trackRefInput" class="form-control border-0 py-2" placeholder="e.g. CGMS-2026-0001" style="font-weight: 600;">
+                            <button class="btn btn-warning fw-bold px-3" type="button" id="trackBtn" onclick="trackGrievance()">
+                                Check <i class="fa-solid fa-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+
+                        <!-- Track Result Alert Box -->
+                        <div id="trackResultBox" class="alert alert-light text-dark d-none shadow-sm mb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <strong id="trackTitle" class="text-primary"></strong>
+                                <span id="trackBadge" class="badge-status"></span>
+                            </div>
+                            <small class="text-muted d-block" id="trackMeta"></small>
+                        </div>
+
+                        <div class="pt-3 border-top border-white border-opacity-25 mt-3 text-center">
+                            <span class="small text-white-50">Already have an account?</span>
+                            <div class="d-flex justify-content-center gap-2 mt-2">
+                                <a href="{{ url_for('login', role='student') }}" class="badge bg-primary text-decoration-none py-2 px-3"><i class="fa-solid fa-user-graduate"></i> Student</a>
+                                <a href="{{ url_for('login', role='admin') }}" class="badge bg-dark text-decoration-none py-2 px-3"><i class="fa-solid fa-user-tie"></i> Admin</a>
+                                <a href="{{ url_for('login', role='principal') }}" class="badge bg-danger text-decoration-none py-2 px-3"><i class="fa-solid fa-user-shield"></i> Principal</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Institutional Pillars / Features Section -->
+    <section id="features" class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="text-center max-w-700 mx-auto mb-5">
+                <span class="text-warning fw-bold text-uppercase small letter-spacing-1">Institutional Governance</span>
+                <h2 class="font-heading mt-1">Key Pillars of the Grievance Cell</h2>
+                <p class="text-muted">Designed in compliance with statutory institutional guidelines to ensure transparency, confidential protection, and speedy facility maintenance.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Pillar 1 -->
+                <div class="col-md-4">
+                    <div class="pillar-card">
+                        <div class="pillar-icon-box">
+                            <i class="fa-solid fa-user-secret"></i>
+                        </div>
+                        <h4>100% Anonymity</h4>
+                        <p>Students' identities are completely isolated from department administrators. Redressal officers view only the ticket details and issue category, eliminating prejudice.</p>
+                    </div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="col-md-4">
+                    <div class="pillar-card">
+                        <div class="pillar-icon-box">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <h4>Duplicate Prevention</h4>
+                        <p>Intelligent AI similarity detection prevents redundant tickets. Students can directly "Support" existing issues, elevating their priority to administrative attention.</p>
+                    </div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="col-md-4">
+                    <div class="pillar-card">
+                        <div class="pillar-icon-box">
+                            <i class="fa-solid fa-bolt-lightning"></i>
+                        </div>
+                        <h4>Executive SLA Escalations</h4>
+                        <p>High-priority tickets unresolved within 3 days automatically escalate straight to the Principal's executive desk for urgent administrative intervention.</p>
+                    </div>
+                </div>
+
+                <!-- Pillar 4 -->
+                <div class="col-md-4">
+                    <div class="pillar-card">
+                        <div class="pillar-icon-box">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <h4>Automated Email Dispatch</h4>
+                        <p>Integrated notification engine dispatches tracking confirmations to students and immediate assignment tickets to department heads via institutional email.</p>
+                    </div>
+                </div>
+
+                <!-- Pillar 5 -->
+                <div class="col-md-4">
+                    <div class="pillar-card">
+                        <div class="pillar-icon-box">
+                            <i class="fa-solid fa-timeline"></i>
+                        </div>
+                        <h4>Milestone Timeline</h4>
+                        <p>Full audit trail from initial submission, inspection review, technician dispatch, to official remark closure with time-stamped status transitions.</p>
+                    </div>
+                </div>
+
+                <!-- Pillar 6 -->
+                <div class="col-md-4">
+                    <div class="pillar-card">
+                        <div class="pillar-icon-box">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <h4>Official Notices & Bulletins</h4>
+                        <p>Centralized campus circulars regarding scheduled facility repairs, power/water shutdowns, and academic facility upgrades issued by the Principal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow / Process Section -->
+    <section id="workflow" class="py-5" style="background-color: var(--navy-50);">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <span class="text-primary fw-bold text-uppercase small letter-spacing-1">Streamlined Workflow</span>
+                <h2 class="font-heading mt-1">How Grievance Redressal Operates</h2>
+                <p class="text-muted">Four transparent stages from registration to verified resolution.</p>
+            </div>
+
+            <div class="row g-4 text-center">
+                <div class="col-md-3">
+                    <div class="card h-100 p-4 border-0 shadow-sm rounded-4">
+                        <div class="rounded-circle bg-primary text-white mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px; font-weight: 700;">1</div>
+                        <h5 class="fw-bold">Roll Number Check</h5>
+                        <p class="small text-muted mb-0">Student account registration verified securely against the college's pre-approved database.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100 p-4 border-0 shadow-sm rounded-4">
+                        <div class="rounded-circle bg-primary text-white mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px; font-weight: 700;">2</div>
+                        <h5 class="fw-bold">File Grievance</h5>
+                        <p class="small text-muted mb-0">Submit issue details with category & priority. Smart duplicate checks guide support voting.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100 p-4 border-0 shadow-sm rounded-4">
+                        <div class="rounded-circle bg-primary text-white mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px; font-weight: 700;">3</div>
+                        <h5 class="fw-bold">Admin Resolution</h5>
+                        <p class="small text-muted mb-0">Maintenance team investigates, records official replies, and updates status in real-time.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100 p-4 border-0 shadow-sm rounded-4">
+                        <div class="rounded-circle bg-success text-white mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px; font-weight: 700;">4</div>
+                        <h5 class="fw-bold">Closed & Notified</h5>
+                        <p class="small text-muted mb-0">Automated email dispatched upon resolution, and the grievance timeline is permanently logged.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact / Helpdesk Section -->
+    <section id="contact" class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <span class="text-warning fw-bold text-uppercase small letter-spacing-1">Central Helpdesk</span>
+                    <h2 class="font-heading mt-1">Campus Administration & Facility Directorate</h2>
+                    <p class="text-secondary mb-4">For urgent safety concerns, questions regarding grievance procedures, or administrative assistance, please contact the administrative office:</p>
+                    
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle bg-light p-3 text-primary"><i class="fa-solid fa-envelope fs-5"></i></div>
+                            <div>
+                                <strong class="d-block text-dark">Institutional Administration Email</strong>
+                                <a href="mailto:dhulipudisuryakiransrinivas@gmail.com" class="text-primary text-decoration-none fw-semibold">dhulipudisuryakiransrinivas@gmail.com</a>
+                                <span class="text-muted small d-block">Official correspondence & grievance helpdesk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="p-4 p-md-5 rounded-4 border bg-light shadow-sm">
+                        <h4 class="font-heading text-primary mb-3">Official Notice to Students</h4>
+                        <ul class="text-secondary small d-flex flex-column gap-2 mb-4 ps-3">
+                            <li>All grievances submitted through this system are logged under the Institutional Redressal Code of Conduct.</li>
+                            <li>False or defamatory submissions are strictly prohibited under college statutes.</li>
+                            <li>Your personal identity (name & roll number) remains strictly concealed from departmental maintenance operators.</li>
+                            <li>Status updates and replies are permanently recorded on your Student Dashboard.</li>
+                        </ul>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('login', role='student') }}" class="btn btn-navy flex-grow-1"><i class="fa-solid fa-user-graduate"></i> Student Sign In</a>
+                            <a href="{{ url_for('register') }}" class="btn btn-outline-gold flex-grow-1"><i class="fa-solid fa-user-plus"></i> Register ID</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Official Institutional Footer -->
+    <footer class="official-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="crest-icon" style="width: 40px; height: 40px; font-size: 1.1rem;">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <h5 class="m-0">COLLEGE GRIEVANCE CELL</h5>
+                    </div>
+                    <p>An official regulatory initiative established for immediate, accountable, and transparent resolution of student grievances, campus infrastructure maintenance, and welfare.</p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Quick Navigation</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-2">
+                        <li><a href="{{ url_for('home') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Home Page</a></li>
+                        <li><a href="{{ url_for('login', role='student') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Student Portal</a></li>
+                        <li><a href="{{ url_for('login', role='admin') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Department Admin Login</a></li>
+                        <li><a href="{{ url_for('login', role='principal') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Principal Executive Desk</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h5>Regulatory Assurance</h5>
+                    <p class="small">The Institutional Grievance Redressal Committee operates strictly in accordance with statutory academic council mandates for student welfare and facility maintenance.</p>
+                    <div class="badge bg-secondary p-2 text-wrap text-start">
+                        <i class="fa-solid fa-lock text-warning me-1"></i> SSL Encrypted & Database Tamper-Proof
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom text-center">
+                <p class="mb-0">&copy; 2026 College Grievance & Facility Management System. Developed by Team [24252-CM-xxx]. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Quick Status Tracking Script -->
+    <script>
+        function trackGrievance() {
+            const input = document.getElementById('trackRefInput');
+            const refId = input.value.trim();
+            const resultBox = document.getElementById('trackResultBox');
+            const trackTitle = document.getElementById('trackTitle');
+            const trackBadge = document.getElementById('trackBadge');
+            const trackMeta = document.getElementById('trackMeta');
+
+            if (!refId) {
+                alert('Please enter a valid Reference Ticket ID (e.g., CGMS-2026-0001).');
+                return;
+            }
+
+            fetch(`/api/track/${encodeURIComponent(refId)}`)
+            .then(res => res.json())
+            .then(data => {
+                resultBox.classList.remove('d-none');
+                if (data.found) {
+                    trackTitle.textContent = `[${data.ref_id}] ${data.title}`;
+                    trackBadge.textContent = data.status;
+                    trackBadge.className = 'badge-status ' + (
+                        data.status === 'Resolved' ? 'badge-resolved' :
+                        data.status === 'In Progress' ? 'badge-progress' :
+                        data.status === 'Under Review' ? 'badge-review' :
+                        data.status === 'Closed' ? 'badge-closed' : 'badge-submitted'
+                    );
+                    trackMeta.textContent = `Category: ${data.category} | Priority: ${data.priority} | Logged: ${data.submitted_at}`;
+                } else {
+                    trackTitle.textContent = 'Grievance Not Found';
+                    trackBadge.textContent = 'Invalid ID';
+                    trackBadge.className = 'badge-status badge-closed';
+                    trackMeta.textContent = 'No ticket found with this Reference ID. Please verify and try again.';
+                }
+            })
+            .catch(err => {
+                resultBox.classList.remove('d-none');
+                trackTitle.textContent = 'Lookup Status';
+                trackBadge.textContent = 'Check Dashboard';
+                trackBadge.className = 'badge-status badge-submitted';
+                trackMeta.textContent = 'Please log in to your Student Dashboard to view full complaint records.';
+            });
+        }
+    </script>
+
+    <!-- Official Entrance Animation Controller -->
+    <script>
+        (function() {
+            const splash = document.getElementById('entranceSplash');
+            if (!splash) return;
+
+            // If arrived from the dedicated splash page, bypass duplicate animation
+            if (sessionStorage.getItem('from_splash') === 'true') {
+                sessionStorage.removeItem('from_splash');
+                if (splash.parentNode) splash.parentNode.removeChild(splash);
+                return;
+            }
+
+            // Lock page scroll during the initial entrance presentation
+            document.body.style.overflow = 'hidden';
+
+            const statusEl = document.getElementById('splashStatus');
+            if (statusEl) {
+                setTimeout(() => {
+                    if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-circle-check text-success me-1"></i> Verifying Academic Governance Protocols...';
+                }, 700);
+                setTimeout(() => {
+                    if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-shield-halved text-gold-400 me-1"></i> Establishing Encrypted Redressal Channel...';
+                }, 1400);
+                setTimeout(() => {
+                    if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-door-open text-warning me-1"></i> Welcome to Campus Redressal Portal';
+                }, 1900);
+            }
+
+            window.dismissSplash = function(immediate) {
+                if (!splash || splash.classList.contains('splash-hide')) return;
+                splash.classList.add('splash-hide');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    if (splash && splash.parentNode) {
+                        splash.parentNode.removeChild(splash);
+                    }
+                }, 850);
+            };
+
+            // Smooth entrance gracefully dissolves to reveal the campus home page
+            setTimeout(() => {
+                dismissSplash(false);
+            }, 2200);
+        })();
+    </script>
+</body>
+</html>

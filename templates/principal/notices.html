@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Bulletins & Directives | Office of Principal</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .portal-sidebar.principal-sidebar .portal-sidebar-menu a.active {
+            background: rgba(197, 155, 39, 0.12);
+            color: #ffffff;
+            border-left-color: var(--gold-500);
+        }
+        .directive-card {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            border-left: 5px solid var(--gold-500);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+        .directive-card:hover {
+            box-shadow: 0 6px 18px rgba(197, 155, 39, 0.12);
+        }
+        .directive-card.admin-notice {
+            border-left-color: var(--navy-800);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Principal Executive Sidebar -->
+        <aside class="portal-sidebar principal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5 style="color: var(--gold-400);">PRINCIPAL CELL</h5>
+                    <span>Executive Oversight</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Executive Command</div>
+                <a href="{{ url_for('principal_dashboard') }}">
+                    <i class="fa-solid fa-chart-line"></i> <span>Executive Analytics</span>
+                </a>
+                <a href="{{ url_for('principal_escalations') }}">
+                    <i class="fa-solid fa-fire text-danger"></i> <span>Critical Escalations</span>
+                </a>
+                <a href="{{ url_for('principal_master_records') }}">
+                    <i class="fa-solid fa-database"></i> <span>Master Global Records</span>
+                </a>
+                <a href="{{ url_for('principal_notices') }}" class="active">
+                    <i class="fa-solid fa-bullhorn text-gold-400"></i> <span>Notices & Bulletins</span>
+                </a>
+                
+                <div class="menu-category">Institutional Governance</div>
+                <a href="{{ url_for('principal_manage_users') }}">
+                    <i class="fa-solid fa-users-gear"></i> <span>User & Admin Accounts</span>
+                </a>
+                <a href="{{ url_for('principal_settings') }}">
+                    <i class="fa-solid fa-sliders"></i> <span>System Governance</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">Office of Principal</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">Supreme Authority</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Executive Campus Directives & Bulletins</h5>
+                        <span class="small text-muted">Issue Institutional Decrees & Oversee Live Student Notices</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-dark text-gold-400 border border-warning px-3 py-2 font-mono">
+                        <i class="fa-solid fa-crown me-1"></i> Executive Directives Authority
+                    </span>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Alert Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show mb-4 border-0 shadow-sm" role="alert">
+                                <i class="fa-solid {% if category == 'success' %}fa-circle-check{% elif category == 'danger' %}fa-triangle-exclamation{% else %}fa-circle-info{% endif %} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <div class="row g-4">
+                    
+                    <!-- Left: Compose Executive Directive -->
+                    <div class="col-lg-5">
+                        <div class="card card-official shadow-sm" style="border-top: 4px solid var(--gold-500);">
+                            <div class="card-header py-3 d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, var(--navy-950) 0%, var(--navy-900) 100%);">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-crown text-gold-400"></i>
+                                    <h6 class="m-0 fw-bold font-heading text-white">Broadcast Executive Directive</h6>
+                                </div>
+                                <span class="badge bg-warning text-dark font-mono">Supreme Authority</span>
+                            </div>
+                            <div class="card-body p-4">
+                                <p class="small text-muted mb-3">
+                                    Directives issued by the Principal's Office are badged with the gold <strong>Principal Office</strong> seal and highlighted with priority on all student portals.
+                                </p>
+
+                                <form method="POST" action="{{ url_for('principal_notices') }}">
+                                    <div class="mb-3">
+                                        <label class="form-label-official required">Directive Subject / Headline</label>
+                                        <input type="text" class="form-control form-control-official" name="title" placeholder="e.g. Executive Notice: Grievance Special Hearing & Semester Review" required>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label-official required">Official Decree & Detailed Text</label>
+                                        <textarea class="form-control form-control-official" name="content" rows="6" placeholder="State the institutional directive, grievance redressal decisions, or mandatory compliance instructions..." required></textarea>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-navy py-2 fw-semibold" style="background: linear-gradient(135deg, var(--navy-900) 0%, #1e3a5f 100%); border: 1px solid var(--gold-500);">
+                                            <i class="fa-solid fa-certificate text-gold-400 me-2"></i> Issue & Publish Executive Directive
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Directive Authority Box -->
+                        <div class="p-3 mt-4 rounded-3 border bg-white shadow-sm">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="text-gold-500 fs-4 mt-1"><i class="fa-solid fa-shield-halved"></i></div>
+                                <div>
+                                    <div class="fw-bold text-navy-950 small">Supreme Editorial Oversight</div>
+                                    <div class="small text-muted" style="font-size: 0.8rem; line-height: 1.5;">
+                                        As the Chief Executive Authority, you have full power to retract any notice issued by administrative staff or published from this office.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Feed of All Notices -->
+                    <div class="col-lg-7">
+                        <div class="card card-official shadow-sm">
+                            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-newspaper text-gold-500"></i>
+                                    <h6 class="m-0 fw-bold font-heading text-white">Active Campus Notices & Directives</h6>
+                                </div>
+                                <span class="badge bg-white text-navy-950 font-mono">{{ announcements|length }} Total</span>
+                            </div>
+                            <div class="card-body p-4">
+                                
+                                {% for ann in announcements %}
+                                <div class="directive-card {% if ann.posted_by_role != 'Principal' %}admin-notice{% endif %}">
+                                    <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-2">
+                                        <div>
+                                            <h6 class="fw-bold text-navy-950 m-0">{{ ann.title }}</h6>
+                                            <div class="d-flex align-items-center gap-2 mt-1">
+                                                {% if ann.posted_by_role == 'Principal' %}
+                                                    <span class="badge bg-dark text-gold-400 font-mono px-2 py-1 border border-warning">
+                                                        <i class="fa-solid fa-crown me-1 text-gold-400"></i> Principal Office
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-navy text-white font-mono px-2 py-1">
+                                                        <i class="fa-solid fa-user-tie me-1 text-gold-400"></i> Administration
+                                                    </span>
+                                                {% endif %}
+                                                <span class="small text-muted font-mono" style="font-size: 0.75rem;">
+                                                    <i class="fa-regular fa-clock me-1"></i> {{ ann.created_at.strftime('%d %b %Y, %I:%M %p') }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <form method="POST" action="{{ url_for('principal_delete_notice', id=ann.id) }}" onsubmit="return confirm('Retract and delete this notice from the student bulletin board?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Retract Notice">
+                                                <i class="fa-solid fa-trash-can me-1"></i> Retract
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <p class="text-secondary small m-0 pt-2 border-top" style="white-space: pre-line; line-height: 1.6;">
+                                        {{ ann.content }}
+                                    </p>
+                                </div>
+                                {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fa-solid fa-bullhorn fa-3x text-muted mb-3 opacity-50"></i>
+                                    <h6 class="fw-bold text-navy-950">No Campus Notices Active</h6>
+                                    <p class="small text-muted">Use the executive decree form to issue your first directive to students and staff.</p>
+                                </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

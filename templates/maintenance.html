@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Maintenance &amp; Audit in Progress | College Grievance Portal</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #0f2b48 0%, #081726 55%, #02070e 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #ffffff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .maintenance-card {
+            background: rgba(11, 31, 53, 0.85);
+            border: 1px solid rgba(223, 183, 67, 0.35);
+            border-top: 4px solid #dc3545;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(220, 53, 69, 0.15);
+            backdrop-filter: blur(12px);
+            padding: 2.75rem 2.5rem;
+            max-width: 640px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .crest-icon-wrap {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(220, 53, 69, 0.2) 0%, rgba(15, 43, 72, 0.6) 100%);
+            border: 2px solid #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 25px rgba(220, 53, 69, 0.35);
+            animation: pulseWarning 2.5s infinite alternate;
+        }
+
+        @keyframes pulseWarning {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(220, 53, 69, 0.3); }
+            100% { transform: scale(1.04); box-shadow: 0 0 35px rgba(220, 53, 69, 0.55); }
+        }
+
+        .m-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .m-sub {
+            font-size: 0.85rem;
+            color: var(--gold-400);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .m-desc {
+            font-size: 0.94rem;
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1.65;
+            margin-bottom: 1.75rem;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 6px 18px;
+            border-radius: 50px;
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.4);
+            color: #ff6b6b;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-family: monospace;
+            margin-bottom: 2rem;
+        }
+
+        .admin-link {
+            font-size: 0.82rem;
+            color: var(--gold-400);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border: 1px solid rgba(223, 183, 67, 0.3);
+            border-radius: 8px;
+            background: rgba(223, 183, 67, 0.08);
+        }
+
+        .admin-link:hover {
+            color: #ffffff;
+            background: rgba(223, 183, 67, 0.2);
+            border-color: var(--gold-400);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="maintenance-card">
+        <!-- Warning Emblem -->
+        <div class="crest-icon-wrap">
+            <i class="fa-solid fa-triangle-exclamation text-danger fs-1"></i>
+        </div>
+
+        <div class="status-pill">
+            <i class="fa-solid fa-circle text-danger fa-fade"></i>
+            SYSTEM MAINTENANCE LOCKDOWN ACTIVE
+        </div>
+
+        <h1 class="m-title">SYSTEM MAINTENANCE &amp; AUDIT</h1>
+        <div class="m-sub">Autonomous Academic Quality Assurance Cell (IQAC)</div>
+
+        <p class="m-desc">
+            The College Grievance &amp; Facility Management Portal is temporarily offline for scheduled system maintenance, infrastructure updates, and institutional policy governance audit under the direct prerogative of the Principal's Office.
+        </p>
+
+        <div class="p-3 rounded-3 mb-4 text-start small" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.08);">
+            <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-semibold">
+                <i class="fa-solid fa-shield-halved"></i> Data Protection &amp; Continuity Advisory
+            </div>
+            <div class="text-white-50">
+                All lodged grievances, milestone tracking histories, and student credentials remain securely preserved in encrypted storage. Portal services will automatically resume upon completion of the maintenance cycle.
+            </div>
+        </div>
+
+        <!-- Administrative Sign-in Fallback for Principal / Super Admin -->
+        <div class="pt-2 border-top border-secondary border-opacity-25 d-flex flex-column align-items-center">
+            <span class="small text-white-50 mb-2">Are you an authorized executive administrator?</span>
+            <a href="{{ url_for('login', role='principal') }}" class="admin-link">
+                <i class="fa-solid fa-crown text-warning"></i> Principal Executive Login Console
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

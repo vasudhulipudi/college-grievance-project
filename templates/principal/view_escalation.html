@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigate Escalation [{{ complaint.complaint_ref_id }}] | Principal Executive Console</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        .portal-sidebar.principal-sidebar {
+            background: linear-gradient(180deg, #071526 0%, #030a14 100%);
+            border-right: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-header {
+            border-bottom: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-crest {
+            background: rgba(197, 155, 39, 0.15);
+            color: var(--gold-400);
+            border: 2px solid var(--gold-500);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-menu a.active {
+            background: rgba(197, 155, 39, 0.12);
+            color: #ffffff;
+            border-left-color: var(--gold-500);
+        }
+
+        .identity-box {
+            background: linear-gradient(135deg, #fff9e6 0%, #fffdf5 100%);
+            border: 2px solid var(--gold-500);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .reply-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--navy-800);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 15px;
+        }
+
+        .reply-item.principal-reply {
+            border-left-color: #dc3545;
+            background: #fffafa;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Principal Executive Sidebar -->
+        <aside class="portal-sidebar principal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5 style="color: var(--gold-400);">PRINCIPAL CELL</h5>
+                    <span>Executive Oversight</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Executive Command</div>
+                <a href="{{ url_for('principal_dashboard') }}">
+                    <i class="fa-solid fa-chart-line"></i> <span>Executive Analytics</span>
+                </a>
+                <a href="{{ url_for('principal_escalations') }}" class="active">
+                    <i class="fa-solid fa-fire text-danger"></i> <span>Critical Escalations</span>
+                </a>
+                <a href="{{ url_for('principal_master_records') }}">
+                    <i class="fa-solid fa-database"></i> <span>Master Global Records</span>
+                </a>
+                <a href="{{ url_for('principal_notices') }}">
+                    <i class="fa-solid fa-bullhorn text-gold-400"></i> <span>Notices & Bulletins</span>
+                </a>
+                
+                <div class="menu-category">Institutional Governance</div>
+                <a href="{{ url_for('principal_manage_users') }}">
+                    <i class="fa-solid fa-users-gear"></i> <span>User & Admin Accounts</span>
+                </a>
+                <a href="{{ url_for('principal_settings') }}">
+                    <i class="fa-solid fa-sliders"></i> <span>System Governance</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">Office of Principal</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">Supreme Authority</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Executive Inquiry Docket</h5>
+                        <span class="small text-muted">Statutory Examination of SLA Breach & Department Non-Performance</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ url_for('principal_escalations') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back to Escalations List
+                    </a>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-info me-2"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <div class="row g-4">
+                    
+                    <!-- Left Column: Details & Interaction History -->
+                    <div class="col-lg-7">
+                        
+                        <!-- Complaint Overview Card -->
+                        <div class="card card-official mb-4" style="border-top-color: #dc3545;">
+                            <div class="card-header bg-danger text-white d-flex flex-wrap align-items-center justify-content-between gap-3 py-3">
+                                <div>
+                                    <span class="small text-white-50 font-mono">DOCKET REFERENCE</span>
+                                    <h5 class="m-0 fw-bold font-heading text-white">{{ complaint.complaint_ref_id }}</h5>
+                                </div>
+                                <span class="badge {% if complaint.status == 'Closed' %}bg-dark{% else %}bg-warning text-dark{% endif %} font-mono px-3 py-1">
+                                    {{ complaint.status }}
+                                </span>
+                            </div>
+
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-navy-950 mb-3">{{ complaint.title }}</h5>
+                                <div class="p-3 rounded-3 bg-light border mb-3">
+                                    <span class="small text-muted text-uppercase fw-semibold d-block mb-1">Grievance Narrative:</span>
+                                    <p class="m-0 text-dark" style="white-space: pre-line; line-height: 1.7;">
+                                        {{ complaint.description }}
+                                    </p>
+                                </div>
+
+                                <div class="d-flex flex-wrap align-items-center gap-4 text-muted small pt-2">
+                                    <span><i class="fa-regular fa-calendar text-danger me-1"></i> Logged: {{ complaint.submitted_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                                    <span><i class="fa-solid fa-folder text-gold-500 me-1"></i> {{ complaint.category }}</span>
+                                    <span><i class="fa-solid fa-triangle-exclamation text-danger me-1"></i> Priority: <strong>{{ complaint.priority }}</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ticket History Timeline -->
+                        <div class="card card-official">
+                            <div class="card-header">
+                                <h6 class="m-0 fw-bold font-heading text-white">
+                                    <i class="fa-solid fa-clock-rotate-left text-gold-500 me-2"></i> Department Interaction Audit
+                                </h6>
+                            </div>
+
+                            <div class="card-body p-4">
+                                {% for reply in replies %}
+                                <div class="reply-item {% if reply.replied_by_role == 'Principal' %}principal-reply{% endif %}">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <h6 class="m-0 fw-bold {% if reply.replied_by_role == 'Principal' %}text-danger{% else %}text-navy-950{% endif %}">
+                                            <i class="fa-solid {% if reply.replied_by_role == 'Principal' %}fa-crown text-warning{% else %}fa-user-tie text-navy-800{% endif %} me-1"></i>
+                                            {{ reply.replied_by_role }} Staff Directive
+                                        </h6>
+                                        <span class="small font-mono text-muted">
+                                            <i class="fa-regular fa-clock me-1"></i> {{ reply.replied_at.strftime('%d %b %Y, %I:%M %p') }}
+                                        </span>
+                                    </div>
+                                    <p class="m-0 pt-2 border-top text-secondary small" style="white-space: pre-line; line-height: 1.65;">
+                                        {{ reply.reply_text }}
+                                    </p>
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fa-solid fa-comment-slash fa-2x mb-2 text-secondary d-block"></i>
+                                    <span class="small">Administrative department posted no responses prior to SLA breach escalation.</span>
+                                </div>
+                                {% endfor %}
+
+                                {% if complaint.is_escalated %}
+                                <div class="p-3 rounded-3 bg-danger-subtle text-danger border border-danger-subtle small mt-3">
+                                    <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                                    <strong>System Violation Recorded:</strong> Unresolved beyond defined threshold. Department flagged for non-responsiveness.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: Student Identity Clearance & Executive Powers -->
+                    <div class="col-lg-5">
+                        
+                        <!-- UNMASKED STUDENT IDENTITY CARD -->
+                        <div class="identity-box mb-4 shadow-sm">
+                            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom border-warning">
+                                <i class="fa-solid fa-user-check text-warning fs-4"></i>
+                                <div>
+                                    <h6 class="m-0 fw-bold text-navy-950 font-heading">Complainant Identity Cleared</h6>
+                                    <span class="small text-muted">Exclusive Principal Executive Authorization</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column gap-2 small">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Student Name:</span>
+                                    <strong class="text-navy-950 fs-6">{{ student.student_name }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">College Roll No:</span>
+                                    <strong class="font-mono text-navy-900">{{ student.roll_number }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Direct Email:</span>
+                                    <strong class="font-mono text-navy-900">{{ student.personal_email }}</strong>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 pt-2 border-top border-warning small text-muted">
+                                <em>Data decrypted securely from the academic enrollment registry. Protected from standard administrative personnel.</em>
+                            </div>
+                        </div>
+
+                        <!-- Department Accountability Card -->
+                        <div class="card card-official mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 fw-bold font-heading text-white">
+                                    <i class="fa-solid fa-building-user text-gold-500 me-2"></i> Department Accountability
+                                </h6>
+                            </div>
+
+                            <div class="card-body p-4">
+                                <p class="small text-muted mb-2">Responsible Division: <strong class="text-navy-950">{{ complaint.category }} Affairs</strong></p>
+                                <p class="small text-muted mb-0">
+                                    Compliance Assessment: 
+                                    {% if complaint.is_escalated %}
+                                        <span class="badge bg-danger">SLA Defaulter Flagged</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Compliant</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Executive Actions Card -->
+                        <div class="card card-official">
+                            <div class="card-header">
+                                <h6 class="m-0 fw-bold font-heading text-white">
+                                    <i class="fa-solid fa-gavel text-gold-500 me-2"></i> Executive Orders
+                                </h6>
+                            </div>
+
+                            <div class="card-body p-4">
+                                <form action="{{ url_for('principal_view_escalation', id=complaint.complaint_ref_id) }}" method="POST">
+                                    <input type="hidden" name="action" value="force_close">
+                                    
+                                    <button type="button" class="btn btn-navy w-100 py-2 mb-3" data-bs-toggle="modal" data-bs-target="#dispatchEmailModal">
+                                        <i class="fa-solid fa-envelope me-2 text-gold-400"></i> Dispatch Email to Student
+                                    </button>
+
+                                    {% if complaint.status != 'Closed' %}
+                                    <button type="submit" class="btn btn-outline-danger w-100 py-2" 
+                                            onclick="return confirm('Invoke supreme executive prerogative to forcefully terminate and close this ticket?');">
+                                        <i class="fa-solid fa-lock me-2"></i> Force Close Grievance Ticket
+                                    </button>
+                                    {% else %}
+                                    <div class="alert alert-success m-0 small text-center">
+                                        <i class="fa-solid fa-circle-check me-1"></i> This grievance has been officially concluded and archived.
+                                    </div>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Modal for Principal Executive Email Dispatch -->
+    <div class="modal fade" id="dispatchEmailModal" tabindex="-1" aria-labelledby="dispatchEmailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="border: 2px solid var(--gold-500); border-radius: 12px; overflow: hidden;">
+                <div class="modal-header bg-navy-950 text-white" style="border-bottom: 2px solid var(--gold-500); background-color: #071526;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-crown text-warning fs-5"></i>
+                        <div>
+                            <h6 class="modal-title font-heading fw-bold m-0 text-white" id="dispatchEmailModalLabel">
+                                Executive Directive Email Dispatcher
+                            </h6>
+                            <span class="small" style="color: var(--gold-300);">Office of Principal &bull; Autonomous Institutional Governance</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('principal_dispatch_email', ref_id=complaint.complaint_ref_id) }}" method="POST">
+                    <div class="modal-body p-4">
+                        <!-- Recipient Details Box -->
+                        <div class="p-3 rounded-3 mb-3" style="background: rgba(15, 43, 72, 0.05); border: 1px solid rgba(15, 43, 72, 0.15);">
+                            <div class="row g-2 small">
+                                <div class="col-sm-6">
+                                    <span class="text-muted d-block">Complainant:</span>
+                                    <strong class="text-navy-950 fs-6">{{ student.student_name }}</strong>
+                                    <span class="badge bg-light text-navy-900 border font-mono ms-1">{{ student.roll_number }}</span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <span class="text-muted d-block">Direct Email:</span>
+                                    <strong class="text-navy-900 font-mono">{{ student.personal_email }}</strong>
+                                </div>
+                                <div class="col-12 mt-2 pt-2 border-top">
+                                    <span class="text-muted">Target Docket:</span>
+                                    <span class="badge bg-danger-subtle text-danger font-mono fw-bold ms-1">{{ complaint.complaint_ref_id }}</span>
+                                    <span class="text-secondary ms-2">&bull; {{ complaint.title }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subject Line -->
+                        <div class="mb-3">
+                            <label class="form-label-official required fw-bold text-navy-950">Directive Subject Line</label>
+                            <input type="text" class="form-control form-control-official font-mono" name="subject" 
+                                   value="Official Executive Directive regarding Grievance {{ complaint.complaint_ref_id }}" required>
+                        </div>
+
+                        <!-- Directive Message -->
+                        <div class="mb-3">
+                            <label class="form-label-official required fw-bold text-navy-950">Official Executive Directive / Hearing Notice</label>
+                            <textarea class="form-control form-control-official" name="body" rows="6" 
+                                      placeholder="Detail your executive instructions, hearing appointment date/time, inquiry summons, or resolution decree..." required></textarea>
+                            <div class="form-text small text-muted">This message will be transmitted directly to {{ student.personal_email }} from the institution's official email server.</div>
+                        </div>
+
+                        <!-- Option to record in ticket history -->
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="recordHistoryCheck" name="record_in_history" value="true" checked>
+                            <label class="form-check-label small fw-semibold text-navy-900" for="recordHistoryCheck">
+                                Record this executive dispatch in the ticket's official chronology (Visible to student on portal)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light d-flex justify-content-between">
+                        <a href="mailto:{{ student.personal_email }}?subject=Official%20Communication%20regarding%20Grievance%20{{ complaint.complaint_ref_id }}" 
+                           class="small text-muted text-decoration-none" title="Open in external desktop mail client">
+                            <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Open in desktop client
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-navy px-4">
+                                <i class="fa-solid fa-paper-plane text-gold-400 me-2"></i> Transmit Official Email
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal Executive Console | College Grievance & Facility Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        .portal-sidebar.principal-sidebar {
+            background: linear-gradient(180deg, #071526 0%, #030a14 100%);
+            border-right: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-header {
+            border-bottom: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-crest {
+            background: rgba(197, 155, 39, 0.15);
+            color: var(--gold-400);
+            border: 2px solid var(--gold-500);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-menu a.active {
+            background: rgba(197, 155, 39, 0.12);
+            color: #ffffff;
+            border-left-color: var(--gold-500);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Principal Executive Sidebar -->
+        <aside class="portal-sidebar principal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5 style="color: var(--gold-400);">PRINCIPAL CELL</h5>
+                    <span>Executive Oversight</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Executive Command</div>
+                <a href="{{ url_for('principal_dashboard') }}" class="active">
+                    <i class="fa-solid fa-chart-line"></i> <span>Executive Analytics</span>
+                </a>
+                <a href="{{ url_for('principal_escalations') }}">
+                    <i class="fa-solid fa-fire text-danger"></i> <span>Critical Escalations</span>
+                </a>
+                <a href="{{ url_for('principal_master_records') }}">
+                    <i class="fa-solid fa-database"></i> <span>Master Global Records</span>
+                </a>
+                <a href="{{ url_for('principal_notices') }}">
+                    <i class="fa-solid fa-bullhorn text-gold-400"></i> <span>Notices & Bulletins</span>
+                </a>
+                
+                <div class="menu-category">Institutional Governance</div>
+                <a href="{{ url_for('principal_manage_users') }}">
+                    <i class="fa-solid fa-users-gear"></i> <span>User & Admin Accounts</span>
+                </a>
+                <a href="{{ url_for('principal_settings') }}">
+                    <i class="fa-solid fa-sliders"></i> <span>System Governance</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">Office of Principal</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">Supreme Authority</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Principal's Executive Governance Console</h5>
+                        <span class="small text-muted">Institutional Oversight, Escalation Inquiries & Compliance Audit</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="portal-user-badge d-none d-sm-flex" style="background: rgba(197, 155, 39, 0.1); border-color: var(--gold-400);">
+                        <i class="fa-solid fa-crown text-warning"></i>
+                        <span class="text-navy-950 fw-bold">Chief Executive Authority</span>
+                    </div>
+                    <a href="{{ url_for('principal_escalations') }}" class="btn btn-sm btn-danger font-mono">
+                        <i class="fa-solid fa-fire me-1"></i> {{ escalated_count }} Escalation(s)
+                    </a>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Alert Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-info me-2"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <!-- Executive Overview Banner -->
+                <div class="p-4 rounded-4 mb-4 text-white shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3" 
+                     style="background: linear-gradient(135deg, #071526 0%, #030a14 100%); border-left: 5px solid var(--gold-500); border-bottom: 2px solid rgba(197, 155, 39, 0.3);">
+                    <div>
+                        <span class="badge bg-warning text-dark font-mono mb-2">SUPREME INSTITUTIONAL OVERSIGHT</span>
+                        <h4 class="font-heading fw-bold m-0 mb-1">Welcome, Principal Sir / Madam</h4>
+                        <p class="text-white-50 m-0 small">Automated SLA compliance monitors tickets. Overdue and critical breaches immediately escalate here with identity clearance.</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('principal_escalations') }}" class="btn btn-danger px-4">
+                            <i class="fa-solid fa-fire me-1"></i> Inspect Overdue Tickets
+                        </a>
+                        <a href="{{ url_for('principal_master_records') }}" class="btn btn-outline-light px-3">
+                            <i class="fa-solid fa-database me-1"></i> Global Database
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Executive KPI Stat Cards -->
+                <div class="row g-4 mb-4">
+                    <!-- Escalated Complaints -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="kpi-card kpi-danger">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="kpi-title">Critical Overdue Escalations</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-fire"></i></div>
+                            </div>
+                            <div class="kpi-value text-danger">{{ escalated_count }}</div>
+                            <div class="small text-muted mt-2"><i class="fa-solid fa-triangle-exclamation text-danger me-1"></i> Breached Administrative SLA</div>
+                        </div>
+                    </div>
+
+                    <!-- Enrolled Students -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="kpi-card kpi-navy">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="kpi-title">Verified Student Base</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-user-graduate"></i></div>
+                            </div>
+                            <div class="kpi-value">{{ student_count }}</div>
+                            <div class="small text-muted mt-2"><i class="fa-solid fa-id-card text-gold-500 me-1"></i> Registered Academic Students</div>
+                        </div>
+                    </div>
+
+                    <!-- Active Admins -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="kpi-card kpi-warning">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="kpi-title">Facility Administrators</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-user-tie"></i></div>
+                            </div>
+                            <div class="kpi-value text-navy-950">{{ admin_count }}</div>
+                            <div class="small text-muted mt-2"><i class="fa-solid fa-shield text-warning me-1"></i> Department Officers on Duty</div>
+                        </div>
+                    </div>
+
+                    <!-- Resolution Rate -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="kpi-card kpi-success">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="kpi-title">Systemic Resolution Rate</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+                            </div>
+                            <div class="kpi-value text-success">{{ resolution_rate }}%</div>
+                            <div class="small text-muted mt-2"><i class="fa-solid fa-arrow-trend-up text-success me-1"></i> Institutional Efficiency Metric</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Institutional Anti-Abuse & Content Moderation Oversight Banner -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-white rounded-3 border shadow-sm d-flex align-items-center justify-content-between" style="border-left: 4px solid #ef4444 !important;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(239, 68, 68, 0.15); color: #dc2626;">
+                                    <i class="fa-solid fa-ban fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-navy-950">Pre-Submission Abuse Blocks</div>
+                                    <span class="small text-muted">Prohibited obscenities, slurs & gibberish intercepted</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-danger font-mono fs-6">{{ blocked_abuse_count }} Intercepted</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-white rounded-3 border shadow-sm d-flex align-items-center justify-content-between" style="border-left: 4px solid #f59e0b !important;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(245, 158, 11, 0.15); color: #d97706;">
+                                    <i class="fa-solid fa-shield-halved fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-navy-950">Quarantined Tickets Under Review</div>
+                                    <span class="small text-muted">Awaiting Department Admin moderation release</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-warning text-dark font-mono fs-6">{{ quarantined_count }} Quarantined</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Critical Overdue Escalations Table -->
+                <div class="card card-official" style="border-top-color: #dc3545;">
+                    <div class="card-header bg-danger text-white d-flex flex-wrap align-items-center justify-content-between gap-3 py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-fire text-warning fs-5"></i>
+                            <h6 class="m-0 fw-bold font-heading text-white">Critical Overdue Escalations (High Executive Priority)</h6>
+                        </div>
+                        <a href="{{ url_for('principal_escalations') }}" class="btn btn-sm btn-outline-light font-mono">
+                            View All Escalations <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+
+                    <div class="p-3 bg-warning-subtle text-dark border-bottom small d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-warning fs-5"></i>
+                        <div>
+                            <strong>Privacy Override Activated:</strong> In accordance with college safety statute, student identities are revealed exclusively to the Principal for formal administrative intervention.
+                        </div>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-official mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Ref ID</th>
+                                        <th>Complainant Details</th>
+                                        <th>Category</th>
+                                        <th>Issue Title</th>
+                                        <th>Initial Date</th>
+                                        <th>Escalation State</th>
+                                        <th class="text-end">Executive Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for complaint, student in escalated_tickets %}
+                                    <tr>
+                                        <td class="font-mono fw-bold text-danger">{{ complaint.complaint_ref_id }}</td>
+                                        <td>
+                                            <div class="fw-bold text-navy-950">{{ student.student_name }}</div>
+                                            <span class="small font-mono text-muted">{{ student.roll_number }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border font-mono">{{ complaint.category }}</span>
+                                        </td>
+                                        <td class="fw-semibold text-dark" style="max-width: 280px;">{{ complaint.title }}</td>
+                                        <td class="small text-muted font-mono">{{ complaint.submitted_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                                        <td>
+                                            <span class="badge bg-danger font-mono px-3 py-1">
+                                                <i class="fa-solid fa-triangle-exclamation me-1"></i> Auto-Escalated
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ url_for('principal_view_escalation', id=complaint.complaint_ref_id) }}" class="btn btn-sm btn-outline-danger font-mono px-3">
+                                                Investigate <i class="fa-solid fa-gavel ms-1"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-success">
+                                            <div class="py-4">
+                                                <i class="fa-solid fa-circle-check fa-3x text-success mb-3"></i>
+                                                <h6 class="fw-bold text-dark">Zero Outstanding Escalations!</h6>
+                                                <p class="small text-muted m-0">All departments are resolving student grievances within established response SLA limits.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light py-3 px-4 d-flex align-items-center justify-content-between small text-muted">
+                        <span>Office of the Principal | Autonomous College Grievance Cell</span>
+                        <span class="font-mono">Security Tier 1: Supreme Master Access</span>
+                    </div>
+                </div>
+
+                <!-- Institutional Anti-Abuse & Moderation Audit Vault -->
+                <div class="card card-official mt-4" style="border-top-color: #0f2b48;">
+                    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3 py-3" style="background: linear-gradient(135deg, #0f2b48 0%, #1e293b 100%);">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-shield-cat text-gold-400 fs-5"></i>
+                            <h6 class="m-0 fw-bold font-heading text-white">Disciplinary Anti-Abuse Audit Vault (Pre-Submission Interceptions)</h6>
+                        </div>
+                        <span class="badge bg-light text-dark font-mono">{{ recent_moderation_logs|length }} Recent Audits</span>
+                    </div>
+
+                    <div class="p-3 bg-light border-bottom small text-muted d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-primary"></i>
+                        <span>Permanent audit ledger logging student roll numbers, timestamps, risk scores, and reasons for submissions intercepted by the moderation engine.</span>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-official mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Logged Timestamp</th>
+                                        <th>Student Roll No</th>
+                                        <th>Category</th>
+                                        <th>Attempted Title</th>
+                                        <th>Action Taken</th>
+                                        <th>Risk Score</th>
+                                        <th>Interception Reasons</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for log in recent_moderation_logs %}
+                                    <tr>
+                                        <td class="small text-muted font-mono">{{ log.created_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                                        <td class="font-mono fw-bold text-navy-950">{{ log.student_roll or 'Anonymous' }}</td>
+                                        <td><span class="badge bg-light text-dark border font-mono">{{ log.category or 'N/A' }}</span></td>
+                                        <td class="fw-semibold text-dark" style="max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ log.title }}">{{ log.title }}</td>
+                                        <td>
+                                            {% if log.action_taken == 'BLOCKED' %}
+                                                <span class="badge bg-danger font-mono"><i class="fa-solid fa-ban me-1"></i> Blocked</span>
+                                            {% elif log.action_taken == 'FLAGGED' %}
+                                                <span class="badge bg-warning text-dark font-mono"><i class="fa-solid fa-flag me-1"></i> Flagged</span>
+                                            {% else %}
+                                                <span class="badge bg-success font-mono">Clean</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge {% if log.risk_score >= 70 %}bg-danger{% elif log.risk_score >= 35 %}bg-warning text-dark{% else %}bg-success{% endif %} font-mono">
+                                                {{ log.risk_score }}/100
+                                            </span>
+                                        </td>
+                                        <td class="small text-muted" style="max-width: 250px;">
+                                            <span class="text-danger fw-semibold">{{ log.reasons or log.detected_flags or 'Policy violation' }}</span>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-muted">
+                                            <i class="fa-solid fa-check-double text-success fa-2x mb-2"></i>
+                                            <div class="small fw-semibold text-dark">No abusive or fraudulent attempts logged.</div>
+                                            <div class="small text-muted">The student body is submitting genuine and respectful grievances.</div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light py-2 px-4 small text-muted d-flex justify-content-between">
+                        <span><i class="fa-solid fa-gavel me-1 text-gold-500"></i> Disciplinary action may be initiated under Academic Code Section 9.2.</span>
+                        <span class="font-mono">Audit Log v1.0</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

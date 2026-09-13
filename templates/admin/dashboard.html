@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Command Center | College Grievance & Facility Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Administrative Sidebar -->
+        <aside class="portal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-shield-halved text-gold-400"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5>ADMINISTRATION</h5>
+                    <span>Grievance Operations</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Operational Control</div>
+                <a href="{{ url_for('admin_dashboard') }}" class="active">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Command Overview</span>
+                </a>
+                <a href="{{ url_for('admin_manage_complaints') }}">
+                    <i class="fa-solid fa-bars-progress"></i> <span>Manage Grievances</span>
+                </a>
+                <a href="{{ url_for('admin_notices') }}">
+                    <i class="fa-solid fa-bullhorn"></i> <span>Notices & Bulletins</span>
+                </a>
+                <a href="{{ url_for('admin_reports') }}">
+                    <i class="fa-solid fa-file-invoice"></i> <span>Audit & Reports</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">{{ current_user.username }}</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">Administrative Officer</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Administrative Redressal Console</h5>
+                        <span class="small text-muted">Institutional Grievance Routing, Resolution & Facility Dispatch</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="portal-user-badge d-none d-sm-flex">
+                        <i class="fa-solid fa-user-shield text-primary"></i>
+                        <span>Officer: {{ current_user.username }}</span>
+                    </div>
+                    <a href="{{ url_for('admin_manage_complaints') }}" class="btn btn-sm btn-navy">
+                        <i class="fa-solid fa-list-check me-1 text-gold-400"></i> Open Queue
+                    </a>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Alert Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-info me-2"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <!-- Admin Welcome Banner -->
+                <div class="p-4 rounded-4 mb-4 text-white shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3" 
+                     style="background: linear-gradient(135deg, var(--navy-950) 0%, var(--navy-800) 100%); border-left: 5px solid var(--gold-500);">
+                    <div>
+                        <span class="badge bg-warning text-dark font-mono mb-2">CAMPUS FACILITY CELL</span>
+                        <h4 class="font-heading fw-bold m-0 mb-1">Operational Duty Console</h4>
+                        <p class="text-white-50 m-0 small">Maintain campus facility standards and respond to anonymous student grievances within institutional SLA timelines.</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('admin_manage_complaints') }}" class="btn btn-gold px-4">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i> Review Open Tickets
+                        </a>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Stat Cards -->
+                <div class="row g-4 mb-4">
+                    <!-- Total Tickets -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="kpi-card kpi-navy">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="kpi-title">Total Registry Tickets</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-layer-group"></i></div>
+                            </div>
+                            <div class="kpi-value">{{ total }}</div>
+                            <div class="small text-muted mt-2"><i class="fa-solid fa-database text-gold-500 me-1"></i> Lifetime Registered</div>
+                        </div>
+                    </div>
+
+                    <!-- High Priority -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="kpi-card kpi-danger">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="kpi-title">Critical / High Severity</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            </div>
+                            <div class="kpi-value text-danger">{{ high }}</div>
+                            <div class="small text-muted mt-2"><i class="fa-solid fa-clock text-danger me-1"></i> Immediate Attention Required</div>
+                        </div>
+                    </div>
+
+                    <!-- Pending / Action Required -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="kpi-card kpi-warning">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="kpi-title">Active Queue (Pending)</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                            </div>
+                            <div class="kpi-value text-warning">{{ pending }}</div>
+                            <div class="small text-muted mt-2"><i class="fa-solid fa-spinner text-warning me-1"></i> Awaiting Staff Resolution</div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Intake -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="kpi-card kpi-success">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="kpi-title">Received Today</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                            </div>
+                            <div class="kpi-value text-success">{{ today_count }}</div>
+                            <div class="small text-muted mt-2"><i class="fa-solid fa-circle-check text-success me-1"></i> Today's Inflow Intake</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Moderation & Anti-Abuse Shield Overview -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-white rounded-3 border shadow-sm d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(245, 158, 11, 0.15); color: #d97706;">
+                                    <i class="fa-solid fa-shield-halved fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-navy-950">Quarantined Grievances</div>
+                                    <span class="small text-muted">Flagged by moderation engine; shielded from active queue</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-warning text-dark font-mono fs-6">{{ quarantined_count }}</span>
+                                <a href="{{ url_for('admin_manage_complaints', filter='quarantined') }}" class="btn btn-sm btn-outline-warning text-dark">
+                                    Audit <i class="fa-solid fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-white rounded-3 border shadow-sm d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(239, 68, 68, 0.15); color: #dc2626;">
+                                    <i class="fa-solid fa-ban fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-navy-950">Pre-Submission Blocks</div>
+                                    <span class="small text-muted">Severe profanity, spam & gibberish blocked at entry</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-danger font-mono fs-6">{{ blocked_count }} Blocked</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Required Tickets Preview Table -->
+                <div class="card card-official">
+                    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-bell text-warning fs-5"></i>
+                            <h6 class="m-0 fw-bold font-heading text-white">Action Required: Unresolved Grievance Submissions</h6>
+                        </div>
+                        <a href="{{ url_for('admin_manage_complaints') }}" class="btn btn-sm btn-outline-light font-mono">
+                            View Complete Master Queue <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-official mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Ref ID</th>
+                                        <th>Category</th>
+                                        <th>Subject Title</th>
+                                        <th>Priority</th>
+                                        <th>Logged Timestamp</th>
+                                        <th>Lifecycle State</th>
+                                        <th class="text-end">Inspection</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for complaint in recent_complaints %}
+                                    <tr>
+                                        <td class="font-mono fw-bold text-navy-900">{{ complaint.complaint_ref_id }}</td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border font-mono">
+                                                <i class="fa-solid fa-folder text-gold-500 me-1"></i> {{ complaint.category }}
+                                            </span>
+                                        </td>
+                                        <td class="fw-semibold text-dark" style="max-width: 280px;">{{ complaint.title }}</td>
+                                        <td>
+                                            {% if complaint.priority == 'High' %}
+                                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-bold">Critical High</span>
+                                            {% elif complaint.priority == 'Medium' %}
+                                                <span class="badge bg-warning-subtle text-dark border border-warning-subtle fw-bold">Medium</span>
+                                            {% else %}
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold">Low</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="small text-muted font-mono">{{ complaint.submitted_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                                        <td>
+                                            {% if complaint.status == 'In Progress' %}
+                                                <span class="badge-status badge-status-progress">In Progress</span>
+                                            {% elif complaint.status == 'Under Review' %}
+                                                <span class="badge-status badge-status-review">Under Review</span>
+                                            {% else %}
+                                                <span class="badge-status badge-status-submitted">Submitted</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ url_for('admin_view_complaint', id=complaint.complaint_ref_id) }}" class="btn btn-sm btn-navy font-mono px-3">
+                                                Review &amp; Update <i class="fa-solid fa-arrow-right ms-1"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <div class="py-4">
+                                                <i class="fa-solid fa-circle-check fa-3x text-success mb-3"></i>
+                                                <h6 class="fw-bold text-dark">Queue Clear!</h6>
+                                                <p class="small text-muted m-0">There are no pending unaddressed grievance tickets at this time.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light py-3 px-4 d-flex align-items-center justify-content-between small text-muted">
+                        <span><i class="fa-solid fa-user-secret text-navy-800 me-1"></i> Submitter Identity Shielding Active</span>
+                        <span class="font-mono">Anonymity Enforced by System Security</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

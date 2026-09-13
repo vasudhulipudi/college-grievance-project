@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Grievances | College Grievance & Facility Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Administrative Sidebar -->
+        <aside class="portal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-shield-halved text-gold-400"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5>ADMINISTRATION</h5>
+                    <span>Grievance Operations</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Operational Control</div>
+                <a href="{{ url_for('admin_dashboard') }}">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Command Overview</span>
+                </a>
+                <a href="{{ url_for('admin_manage_complaints') }}" class="active">
+                    <i class="fa-solid fa-bars-progress"></i> <span>Manage Grievances</span>
+                </a>
+                <a href="{{ url_for('admin_notices') }}">
+                    <i class="fa-solid fa-bullhorn"></i> <span>Notices & Bulletins</span>
+                </a>
+                <a href="{{ url_for('admin_reports') }}">
+                    <i class="fa-solid fa-file-invoice"></i> <span>Audit & Reports</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">{{ current_user.username }}</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">Administrative Officer</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Grievance Master Repository</h5>
+                        <span class="small text-muted">Multi-Parameter Filtering, Sorting & Remediation Queue</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="portal-user-badge d-none d-sm-flex">
+                        <i class="fa-solid fa-shield-halved text-success"></i>
+                        <span>Anonymity Enforced</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Alert Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-info me-2"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <!-- Advanced Filter Controls Card -->
+                <div class="card card-official mb-4">
+                    <div class="card-header d-flex align-items-center justify-content-between py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-filter text-gold-500"></i>
+                            <h6 class="m-0 fw-bold font-heading text-white">Repository Query & Filter Console</h6>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-light" onclick="resetFilters()">
+                            <i class="fa-solid fa-rotate-left me-1"></i> Reset
+                        </button>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <form id="filterForm">
+                            <div class="row g-3 align-items-end">
+                                <!-- Search Keyword -->
+                                <div class="col-xl-3 col-md-6">
+                                    <label class="form-label-official">Keyword or Reference ID</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                        <input type="text" class="form-control form-control-official border-start-0" id="searchInput" placeholder="e.g. CGMS-2026 or Hostel...">
+                                    </div>
+                                </div>
+
+                                <!-- Category Dropdown -->
+                                <div class="col-xl-3 col-md-6">
+                                    <label class="form-label-official">Grievance Category</label>
+                                    <select class="form-select form-control-official" id="categoryFilter">
+                                        <option value="all">All Departments</option>
+                                        <option value="Academic">Academic</option>
+                                        <option value="Faculty">Faculty</option>
+                                        <option value="Library">Library</option>
+                                        <option value="Laboratory">Laboratory</option>
+                                        <option value="Hostel">Hostel</option>
+                                        <option value="Transport">Transport</option>
+                                        <option value="Sports">Sports</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Infrastructure">Infrastructure</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <!-- Priority Dropdown -->
+                                <div class="col-xl-2 col-md-6">
+                                    <label class="form-label-official">Priority Severity</label>
+                                    <select class="form-select form-control-official" id="priorityFilter">
+                                        <option value="all">All Priorities</option>
+                                        <option value="High">High (Critical)</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                </div>
+
+                                <!-- Status Dropdown -->
+                                <div class="col-xl-2 col-md-6">
+                                    <label class="form-label-official">Workflow Status</label>
+                                    <select class="form-select form-control-official" id="statusFilter">
+                                        <option value="all">All Statuses</option>
+                                        <option value="Submitted">Submitted (New)</option>
+                                        <option value="Under Review">Under Review</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Resolved">Resolved</option>
+                                        <option value="Closed">Closed</option>
+                                    </select>
+                                </div>
+
+                                <!-- Apply Action -->
+                                <div class="col-xl-2 col-md-12">
+                                    <button type="button" class="btn btn-navy w-100 py-2" onclick="applyFilters()">
+                                        <i class="fa-solid fa-sliders me-1 text-gold-400"></i> Apply Query
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Queue Filter Navigation Tabs -->
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                    <ul class="nav nav-pills bg-white p-1 rounded-3 border shadow-sm">
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_filter == 'active' %}active bg-navy text-white fw-bold{% else %}text-muted{% endif %} py-2 px-3" href="{{ url_for('admin_manage_complaints', filter='active') }}">
+                                <i class="fa-solid fa-circle-check text-success me-1"></i> Verified Active Queue
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_filter == 'quarantined' %}active bg-warning text-dark fw-bold{% else %}text-muted{% endif %} py-2 px-3 position-relative" href="{{ url_for('admin_manage_complaints', filter='quarantined') }}">
+                                <i class="fa-solid fa-shield-halved text-warning me-1"></i> Quarantined Audit Queue
+                                {% if quarantined_count > 0 %}
+                                    <span class="badge bg-danger rounded-pill ms-1">{{ quarantined_count }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_filter == 'all' %}active bg-navy text-white fw-bold{% else %}text-muted{% endif %} py-2 px-3" href="{{ url_for('admin_manage_complaints', filter='all') }}">
+                                <i class="fa-solid fa-database text-gold-500 me-1"></i> All Tickets Repository
+                            </a>
+                        </li>
+                    </ul>
+                    <span class="badge bg-light text-dark border font-mono px-3 py-2">
+                        Filter: <strong>{{ active_filter|upper }}</strong> ({{ complaints|length }} tickets)
+                    </span>
+                </div>
+
+                <!-- Complete Master Table Card -->
+                <div class="card card-official">
+                    <div class="card-header d-flex align-items-center justify-content-between py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-table-list text-gold-500"></i>
+                            <h6 class="m-0 fw-bold font-heading text-white">
+                                {% if active_filter == 'quarantined' %}
+                                    Quarantined Abuse & Moderation Review Queue
+                                {% elif active_filter == 'all' %}
+                                    Complete Institutional Grievance Repository
+                                {% else %}
+                                    Active Grievance Log (Verified Safe)
+                                {% endif %}
+                            </h6>
+                        </div>
+                        <span class="badge bg-light text-dark font-mono" id="recordCounter">{{ complaints|length }} Records Loaded</span>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-official mb-0" id="complaintsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Ref ID</th>
+                                        <th>Category</th>
+                                        <th>Subject Title</th>
+                                        <th>Priority</th>
+                                        <th>Workflow State</th>
+                                        <th>Submission Date</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for complaint in complaints %}
+                                    <tr data-category="{{ complaint.category }}" data-priority="{{ complaint.priority }}" data-status="{{ complaint.status }}">
+                                        <td class="font-mono fw-bold text-navy-900 ticket-ref">{{ complaint.complaint_ref_id }}</td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border font-mono">
+                                                <i class="fa-solid fa-folder text-gold-500 me-1"></i> {{ complaint.category }}
+                                            </span>
+                                        </td>
+                                        <td class="fw-semibold text-dark ticket-title" style="max-width: 280px;">
+                                            {{ complaint.title }}
+                                            {% if complaint.moderation_status == 'Flagged' %}
+                                                <div class="mt-1">
+                                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size: 0.72rem;">
+                                                        <i class="fa-solid fa-triangle-exclamation me-1"></i> AI Flagged (Risk: {{ complaint.moderation_score }}/100)
+                                                    </span>
+                                                    {% if complaint.moderation_flags %}
+                                                        <span class="badge bg-light text-muted border font-mono" style="font-size: 0.7rem;">{{ complaint.moderation_flags }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if complaint.priority == 'High' %}
+                                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-bold">Critical</span>
+                                            {% elif complaint.priority == 'Medium' %}
+                                                <span class="badge bg-warning-subtle text-dark border border-warning-subtle fw-bold">Medium</span>
+                                            {% else %}
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold">Low</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if complaint.status == 'Quarantined' %}
+                                                <span class="badge bg-warning text-dark font-mono px-2 py-1"><i class="fa-solid fa-shield-halved me-1"></i> Quarantined</span>
+                                            {% elif complaint.status == 'Resolved' %}
+                                                <span class="badge-status badge-status-resolved">Resolved</span>
+                                            {% elif complaint.status == 'In Progress' %}
+                                                <span class="badge-status badge-status-progress">In Progress</span>
+                                            {% elif complaint.status == 'Under Review' %}
+                                                <span class="badge-status badge-status-review">Under Review</span>
+                                            {% elif complaint.status == 'Closed' %}
+                                                <span class="badge-status badge-status-closed">Closed</span>
+                                            {% else %}
+                                                <span class="badge-status badge-status-submitted">Submitted</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="small text-muted font-mono">{{ complaint.submitted_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                                        <td class="text-end">
+                                            {% if complaint.status == 'Quarantined' or complaint.moderation_status == 'Flagged' %}
+                                                <div class="d-flex align-items-center justify-content-end gap-1 flex-wrap">
+                                                    <form action="{{ url_for('admin_moderation_action', id=complaint.id) }}" method="POST" class="d-inline">
+                                                        <input type="hidden" name="action" value="release">
+                                                        <button type="submit" class="btn btn-sm btn-success font-mono py-1 px-2" title="Release to active department queue" onclick="return confirm('Verify and release ticket {{ complaint.complaint_ref_id }} to active queue?');" style="font-size: 0.75rem;">
+                                                            <i class="fa-solid fa-check me-1"></i> Release
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ url_for('admin_moderation_action', id=complaint.id) }}" method="POST" class="d-inline">
+                                                        <input type="hidden" name="action" value="dismiss">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger font-mono py-1 px-2" title="Dismiss as invalid / abusive" onclick="return confirm('Dismiss and close ticket {{ complaint.complaint_ref_id }}?');" style="font-size: 0.75rem;">
+                                                            <i class="fa-solid fa-ban me-1"></i> Dismiss
+                                                        </button>
+                                                    </form>
+                                                    <a href="{{ url_for('admin_view_complaint', id=complaint.complaint_ref_id) }}" 
+                                                       class="btn btn-sm btn-navy font-mono px-2 py-1" style="font-size: 0.75rem;">
+                                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                                    </a>
+                                                </div>
+                                            {% else %}
+                                                <a href="{{ url_for('admin_view_complaint', id=complaint.complaint_ref_id) }}" 
+                                                   class="btn btn-sm btn-navy font-mono px-3">
+                                                    Open Docket <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <div class="py-4">
+                                                <i class="fa-solid fa-folder-open fa-3x text-secondary mb-3"></i>
+                                                <h6 class="fw-bold text-dark">No Grievance Records Found</h6>
+                                                <p class="small text-muted m-0">The database does not contain any grievance records matching current criteria.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light py-3 px-4 d-flex align-items-center justify-content-between small text-muted">
+                        <span><i class="fa-solid fa-user-secret text-navy-800 me-1"></i> Whistleblower Anonymity Enforced: Student personal data is not visible in standard admin queues.</span>
+                        <span class="font-mono">Security Tier 2</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Filtering script -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            const category = document.getElementById('categoryFilter').value;
+            const priority = document.getElementById('priorityFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            const rows = document.querySelectorAll('#complaintsTable tbody tr');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                if (row.cells.length === 1) return; // skip empty state row
+
+                const ref = row.querySelector('.ticket-ref') ? row.querySelector('.ticket-ref').innerText.toLowerCase() : '';
+                const title = row.querySelector('.ticket-title') ? row.querySelector('.ticket-title').innerText.toLowerCase() : '';
+                const rowCat = row.getAttribute('data-category');
+                const rowPri = row.getAttribute('data-priority');
+                const rowSta = row.getAttribute('data-status');
+
+                let matchSearch = !search || ref.includes(search) || title.includes(search);
+                let matchCat = (category === 'all' || category === rowCat);
+                let matchPri = (priority === 'all' || priority === rowPri);
+                let matchSta = (status === 'all' || status === rowSta);
+
+                if (matchSearch && matchCat && matchPri && matchSta) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            const counter = document.getElementById('recordCounter');
+            if (counter) {
+                counter.innerText = `${visibleCount} Records Matching`;
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('priorityFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            applyFilters();
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') applyFilters();
+        });
+    </script>
+</body>
+</html>

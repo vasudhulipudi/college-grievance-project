@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | College Grievance & Facility Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Academic Sidebar -->
+        <aside class="portal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5>STUDENT CELL</h5>
+                    <span>Grievance Redressal</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Main Navigation</div>
+                <a href="{{ url_for('student_dashboard') }}" class="active">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Dashboard Overview</span>
+                </a>
+                <a href="{{ url_for('submit_complaint') }}">
+                    <i class="fa-solid fa-pen-to-square"></i> <span>Lodge Grievance</span>
+                </a>
+                <a href="{{ url_for('student_my_complaints') }}">
+                    <i class="fa-solid fa-table-list"></i> <span>My Grievances</span>
+                </a>
+                <a href="{{ url_for('student_timeline') }}">
+                    <i class="fa-solid fa-timeline"></i> <span>Milestone Timeline</span>
+                </a>
+                
+                <div class="menu-category">Campus & Account</div>
+                <a href="{{ url_for('student_announcements') }}">
+                    <i class="fa-solid fa-bullhorn"></i> <span>Notices & Bulletins</span>
+                </a>
+                <a href="{{ url_for('student_profile') }}">
+                    <i class="fa-solid fa-id-card"></i> <span>Student Profile</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">{{ current_user.student_name }}</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">{{ current_user.roll_number }}</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Student Grievance Command Center</h5>
+                        <span class="small text-muted">Institutional Redressal & Facility Redressal Portal</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="portal-user-badge d-none d-sm-flex">
+                        <i class="fa-solid fa-circle-check text-success"></i>
+                        <span>Enrolled Student</span>
+                    </div>
+                    <div class="portal-user-badge">
+                        <i class="fa-solid fa-hashtag text-warning"></i>
+                        <span>{{ current_user.roll_number }}</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Welcome Card -->
+                <div class="p-4 rounded-4 mb-4 text-white shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3" 
+                     style="background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%); border-left: 5px solid var(--gold-500);">
+                    <div>
+                        <span class="badge bg-warning text-dark text-uppercase fw-bold mb-2">Academic Session 2026</span>
+                        <h3 class="m-0 text-white font-heading">Welcome, {{ current_user.student_name }}</h3>
+                        <p class="m-0 text-white-50 small mt-1">
+                            Your grievances are handled under the Institutional Charter with 100% strict identity concealment from repair and facility staff.
+                        </p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('submit_complaint') }}" class="btn btn-gold btn-sm">
+                            <i class="fa-solid fa-plus-circle"></i> Lodge New Grievance
+                        </a>
+                        <a href="{{ url_for('student_my_complaints') }}" class="btn btn-outline-light btn-sm">
+                            <i class="fa-solid fa-list-check"></i> View History
+                        </a>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Grid -->
+                <div class="row g-3 mb-4">
+                    <!-- Total -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="stat-kpi-card">
+                            <div class="stat-kpi-icon" style="background: rgba(15, 43, 72, 0.1); color: var(--navy-850);">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </div>
+                            <div class="stat-kpi-info">
+                                <h3>{{ total }}</h3>
+                                <p>Total Lodged</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending / Submitted -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="stat-kpi-card">
+                            <div class="stat-kpi-icon" style="background: rgba(217, 119, 6, 0.1); color: var(--gold-600);">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div class="stat-kpi-info">
+                                <h3>{{ pending }}</h3>
+                                <p>Pending Review</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- In Progress -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="stat-kpi-card">
+                            <div class="stat-kpi-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
+                                <i class="fa-solid fa-gears"></i>
+                            </div>
+                            <div class="stat-kpi-info">
+                                <h3>{{ progress }}</h3>
+                                <p>In Resolution</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resolved -->
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="stat-kpi-card">
+                            <div class="stat-kpi-icon" style="background: rgba(5, 150, 105, 0.1); color: #059669;">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="stat-kpi-info">
+                                <h3>{{ resolved }}</h3>
+                                <p>Resolved</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guidance & Important Notice Cards -->
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h5 class="font-heading m-0 text-navy-900">
+                                    <i class="fa-solid fa-shield-halved text-warning me-2"></i> Student Redressal Guidelines
+                                </h5>
+                                <span class="badge bg-light text-muted border">Official</span>
+                            </div>
+                            <ul class="text-secondary small d-flex flex-column gap-3 mb-0 ps-3">
+                                <li>
+                                    <strong>Confidentiality Protection:</strong> Your name and roll number are never shown to department administrators or technicians resolving your complaint.
+                                </li>
+                                <li>
+                                    <strong>Duplicate Issue Voting:</strong> When submitting an issue, if an identical active ticket already exists, you can click <em>"Support Existing Complaint"</em> to upvote its urgency instead of creating redundant tickets.
+                                </li>
+                                <li>
+                                    <strong>SLA Escalation Guarantee:</strong> If high-priority issues are not addressed within the designated timeframe, they are automatically escalated to the Principal's executive desk.
+                                </li>
+                                <li>
+                                    <strong>Status Notifications:</strong> Whenever an administrator responds or changes your complaint's progress, you will receive an automatic institutional confirmation email.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                            <h5 class="font-heading mb-3 text-navy-900">
+                                <i class="fa-solid fa-bolt text-warning me-2"></i> Quick Actions
+                            </h5>
+                            <div class="d-flex flex-column gap-2">
+                                <a href="{{ url_for('submit_complaint') }}" class="btn btn-navy d-flex align-items-center justify-content-between p-3 rounded-3 text-start">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fa-solid fa-pen-nib fs-5 text-warning"></i>
+                                        <div>
+                                            <strong class="d-block text-white">Lodge a New Grievance</strong>
+                                            <span class="small text-white-50">Academic, Hostel, Library, Lab & Transport</span>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-white-50"></i>
+                                </a>
+
+                                <a href="{{ url_for('student_my_complaints') }}" class="btn btn-light d-flex align-items-center justify-content-between p-3 rounded-3 text-start border">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fa-solid fa-clock-rotate-left fs-5 text-primary"></i>
+                                        <div>
+                                            <strong class="d-block text-dark">Track Active Grievances</strong>
+                                            <span class="small text-muted">View official remarks & replies</span>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-muted"></i>
+                                </a>
+
+                                <a href="{{ url_for('student_announcements') }}" class="btn btn-light d-flex align-items-center justify-content-between p-3 rounded-3 text-start border">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fa-solid fa-bullhorn fs-5 text-warning"></i>
+                                        <div>
+                                            <strong class="d-block text-dark">Campus Notice Board</strong>
+                                            <span class="small text-muted">Maintenance circulars & bulletins</span>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-muted"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

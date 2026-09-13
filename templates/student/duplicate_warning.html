@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Similar Complaint Identified | College Grievance & Facility Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Academic Sidebar -->
+        <aside class="portal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5>STUDENT CELL</h5>
+                    <span>Grievance Redressal</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Main Navigation</div>
+                <a href="{{ url_for('student_dashboard') }}">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Dashboard Overview</span>
+                </a>
+                <a href="{{ url_for('submit_complaint') }}" class="active">
+                    <i class="fa-solid fa-pen-to-square"></i> <span>Lodge Grievance</span>
+                </a>
+                <a href="{{ url_for('student_my_complaints') }}">
+                    <i class="fa-solid fa-table-list"></i> <span>My Grievances</span>
+                </a>
+                <a href="{{ url_for('student_timeline') }}">
+                    <i class="fa-solid fa-timeline"></i> <span>Milestone Timeline</span>
+                </a>
+                
+                <div class="menu-category">Campus & Account</div>
+                <a href="{{ url_for('student_announcements') }}">
+                    <i class="fa-solid fa-bullhorn"></i> <span>Notices & Bulletins</span>
+                </a>
+                <a href="{{ url_for('student_profile') }}">
+                    <i class="fa-solid fa-id-card"></i> <span>Student Profile</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">{{ current_user.student_name }}</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">{{ current_user.roll_number }}</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">Cluster Duplicate Intelligence</h5>
+                        <span class="small text-muted">Automated Similarity Matching & Ticket Aggregation System</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="portal-user-badge">
+                        <i class="fa-solid fa-shield-halved text-warning"></i>
+                        <span>Duplicate Prevention Protocol</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body d-flex align-items-center justify-content-center py-5">
+                
+                <div class="card card-official shadow-lg" style="max-width: 680px; width: 100%;">
+                    
+                    <div class="card-header bg-warning text-dark py-3 px-4 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation fs-5 text-dark"></i>
+                            <h6 class="m-0 fw-bold font-heading text-dark">Active Similar Grievance Found</h6>
+                        </div>
+                        <span class="badge bg-dark text-white font-mono">Similarity Detected</span>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5 text-center">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 70px; height: 70px; background: rgba(197, 155, 39, 0.15);">
+                            <i class="fa-solid fa-code-merge fa-2x text-navy-900"></i>
+                        </div>
+
+                        <h4 class="font-heading fw-bold text-navy-950 mb-2">A Matching Ticket Already Exists</h4>
+                        <p class="text-muted small mb-4">
+                            Our institutional redundancy filter detected an ongoing investigation addressing an identical issue in the same category. Supporting the active ticket unites student voices and accelerates administration priority.
+                        </p>
+
+                        <!-- Existing Issue Details Card -->
+                        <div class="p-4 rounded-3 text-start mb-4 border" style="background-color: var(--slate-50);">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="font-mono fw-bold text-navy-900">
+                                    <i class="fa-solid fa-ticket text-gold-500 me-1"></i> {{ existing.complaint_ref_id if existing else 'CGMS-2026-0042' }}
+                                </span>
+                                <span class="badge bg-primary px-3 py-1 font-mono">
+                                    {{ existing.status if existing else 'In Progress' }}
+                                </span>
+                            </div>
+
+                            <h6 class="fw-bold text-navy-950 mb-2">{{ existing.title if existing else 'WiFi connectivity down in Boys Hostel Block-B' }}</h6>
+                            <p class="small text-muted mb-3">{{ existing.description[:180] if existing and existing.description else 'Network equipment outage detected affecting local access points.' }}...</p>
+                            
+                            <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                                <span class="small text-muted">
+                                    <i class="fa-regular fa-calendar me-1"></i> Submitted {{ existing.submitted_at.strftime('%d %b %Y') if existing and existing.submitted_at else 'Recent' }}
+                                </span>
+                                <span class="badge bg-success text-white px-3 py-1 fw-bold">
+                                    <i class="fa-solid fa-arrow-up me-1"></i> {{ existing.support_count if existing else '42' }} Students Support This
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Action Form 1: Support Existing Ticket -->
+                        <form action="{{ url_for('support_complaint', complaint_id=existing.id) if existing else '#' }}" method="POST" class="mb-3">
+                            <button type="submit" class="btn btn-navy w-100 py-3 fw-bold">
+                                <i class="fa-solid fa-thumbs-up text-gold-400 me-2"></i> Support Existing Grievance (+1 Vote)
+                            </button>
+                        </form>
+
+                        <!-- Disciplinary Notice -->
+                        <div class="alert alert-danger text-start small mb-3 py-2 px-3 rounded-2" style="background: #fff5f5; border: 1px solid #fed7d7;">
+                            <i class="fa-solid fa-triangle-exclamation text-danger me-1"></i>
+                            <strong>Warning:</strong> Submitting false or fake complaints is strictly prohibited and attracts strict disciplinary punishment.
+                        </div>
+
+                        <!-- Action Form 2: Force New Submission -->
+                        <form action="{{ url_for('submit_complaint') if existing else '#' }}" method="POST">
+                            <input type="hidden" name="category" value="{{ new_category }}">
+                            <input type="hidden" name="priority" value="{{ new_priority }}">
+                            <input type="hidden" name="title" value="{{ new_title }}">
+                            <input type="hidden" name="description" value="{{ new_desc }}">
+                            <input type="hidden" name="force_submit" value="true">
+                            <input type="hidden" name="truth_declaration" value="on">
+                            
+                            <button type="submit" class="btn btn-outline-secondary w-100 py-2 small">
+                                <i class="fa-solid fa-folder-plus me-1"></i> My Issue is Different — Create Separate Ticket Anyway
+                            </button>
+                        </form>
+
+                        <div class="mt-4 pt-3 border-top text-center">
+                            <a href="{{ url_for('student_dashboard') }}" class="text-decoration-none small text-muted">
+                                <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard Overview
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

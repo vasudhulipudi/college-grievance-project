@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critical Escalations | College Grievance & Facility Management System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Design System Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        .portal-sidebar.principal-sidebar {
+            background: linear-gradient(180deg, #071526 0%, #030a14 100%);
+            border-right: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-header {
+            border-bottom: 1px solid rgba(197, 155, 39, 0.2);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-crest {
+            background: rgba(197, 155, 39, 0.15);
+            color: var(--gold-400);
+            border: 2px solid var(--gold-500);
+        }
+
+        .portal-sidebar.principal-sidebar .portal-sidebar-menu a.active {
+            background: rgba(197, 155, 39, 0.12);
+            color: #ffffff;
+            border-left-color: var(--gold-500);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-layout">
+        
+        <!-- Official Principal Executive Sidebar -->
+        <aside class="portal-sidebar principal-sidebar" id="sidebar">
+            <div class="portal-sidebar-header">
+                <div class="portal-sidebar-crest">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div class="portal-sidebar-title">
+                    <h5 style="color: var(--gold-400);">PRINCIPAL CELL</h5>
+                    <span>Executive Oversight</span>
+                </div>
+            </div>
+
+            <div class="portal-sidebar-menu">
+                <div class="menu-category">Executive Command</div>
+                <a href="{{ url_for('principal_dashboard') }}">
+                    <i class="fa-solid fa-chart-line"></i> <span>Executive Analytics</span>
+                </a>
+                <a href="{{ url_for('principal_escalations') }}" class="active">
+                    <i class="fa-solid fa-fire text-danger"></i> <span>Critical Escalations</span>
+                </a>
+                <a href="{{ url_for('principal_master_records') }}">
+                    <i class="fa-solid fa-database"></i> <span>Master Global Records</span>
+                </a>
+                <a href="{{ url_for('principal_notices') }}">
+                    <i class="fa-solid fa-bullhorn text-gold-400"></i> <span>Notices & Bulletins</span>
+                </a>
+                
+                <div class="menu-category">Institutional Governance</div>
+                <a href="{{ url_for('principal_manage_users') }}">
+                    <i class="fa-solid fa-users-gear"></i> <span>User & Admin Accounts</span>
+                </a>
+                <a href="{{ url_for('principal_settings') }}">
+                    <i class="fa-solid fa-sliders"></i> <span>System Governance</span>
+                </a>
+            </div>
+
+            <div class="portal-sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-white-50">
+                        <div class="fw-bold text-white">Office of Principal</div>
+                        <div style="font-size: 0.72rem; color: var(--gold-300);">Supreme Authority</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="text-danger fs-5" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-main">
+            
+            <!-- Sticky Header -->
+            <header class="portal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold font-heading text-navy-900">SLA Breach Escalation Console</h5>
+                        <span class="small text-muted">Direct Principal Interventions & Disciplinary Grievance Inquiries</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ url_for('principal_dashboard') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Executive Dashboard
+                    </a>
+                </div>
+            </header>
+
+            <!-- Body Content -->
+            <div class="portal-body">
+
+                <!-- Security Protocol Notice Banner -->
+                <div class="p-4 rounded-3 border bg-warning-subtle text-dark mb-4 d-flex align-items-start gap-3 shadow-sm">
+                    <i class="fa-solid fa-shield-halved fa-2x text-warning mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold text-navy-950 mb-1">Confidentiality Protocol: Student Identity Clearance Active</h6>
+                        <p class="small text-secondary m-0" style="line-height: 1.6;">
+                            This console displays grievances that have exceeded statutory response thresholds or carry critical campus safety implications. Complainant identities are legally unmasked under Executive Directive for direct executive contact and department accountability enforcement.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Escalated Complaints Table Card -->
+                <div class="card card-official" style="border-top-color: #dc3545;">
+                    <div class="card-header bg-danger text-white d-flex flex-wrap align-items-center justify-content-between gap-3 py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-fire text-warning fs-5"></i>
+                            <h6 class="m-0 fw-bold font-heading text-white">Critical Outstanding Escalations</h6>
+                        </div>
+
+                        <!-- Live Search Filter -->
+                        <div class="input-group input-group-sm" style="max-width: 320px;">
+                            <span class="input-group-text bg-white border-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                            <input type="text" id="escalationSearch" class="form-control border-0" placeholder="Search Ref ID or student name...">
+                        </div>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-official mb-0" id="escalationTable">
+                                <thead>
+                                    <tr>
+                                        <th>Ref ID</th>
+                                        <th>Student Particulars</th>
+                                        <th>Department</th>
+                                        <th>Issue Title</th>
+                                        <th>Pending Since</th>
+                                        <th>Endorsements</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for complaint, student in tickets %}
+                                    <tr>
+                                        <td class="font-mono fw-bold text-danger ticket-id">{{ complaint.complaint_ref_id }}</td>
+                                        <td class="student-info">
+                                            <div class="fw-bold text-navy-950">{{ student.student_name }}</div>
+                                            <span class="small font-mono text-muted">{{ student.roll_number }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border font-mono">{{ complaint.category }}</span>
+                                        </td>
+                                        <td class="fw-semibold text-dark" style="max-width: 280px;">{{ complaint.title }}</td>
+                                        <td>
+                                            <span class="badge bg-danger-subtle text-danger font-mono">
+                                                Since {{ complaint.submitted_at.strftime('%d %b %Y') }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-navy-900 border font-mono">
+                                                <i class="fa-solid fa-arrow-up text-success me-1"></i> {{ complaint.support_count }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ url_for('principal_view_escalation', id=complaint.complaint_ref_id) }}" 
+                                               class="btn btn-sm btn-outline-danger font-mono px-3">
+                                                Investigate <i class="fa-solid fa-gavel ms-1"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-success">
+                                            <div class="py-4">
+                                                <i class="fa-solid fa-shield-check fa-3x text-success mb-3"></i>
+                                                <h6 class="fw-bold text-dark">No Active Escalations!</h6>
+                                                <p class="small text-muted m-0">The institution is currently free of overdue or non-compliant grievances.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light py-3 px-4 d-flex align-items-center justify-content-between small text-muted">
+                        <span>Showing {{ tickets|length }} escalated item(s)</span>
+                        <span class="font-mono">Office of the Principal | Autonomous Redressal Authority</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="portal-footer">
+                <span>&copy; 2026 College Grievance & Facility Management System. All rights reserved.</span>
+                <span>Autonomous Academic Quality Assurance Cell</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Mobile Sidebar Toggle & Live Search -->
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Live Search Filter
+        const searchInput = document.getElementById('escalationSearch');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                const term = this.value.toLowerCase().trim();
+                const rows = document.querySelectorAll('#escalationTable tbody tr');
+
+                rows.forEach(row => {
+                    if (row.cells.length === 1) return; // skip empty state
+                    const id = row.querySelector('.ticket-id') ? row.querySelector('.ticket-id').innerText.toLowerCase() : '';
+                    const student = row.querySelector('.student-info') ? row.querySelector('.student-info').innerText.toLowerCase() : '';
+
+                    if (id.includes(term) || student.includes(term)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
